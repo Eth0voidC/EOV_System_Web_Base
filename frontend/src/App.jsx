@@ -7,6 +7,7 @@ import './index.css';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import StaffDashboard from './pages/StaffDashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -14,10 +15,24 @@ function App() {
       <Routes>
         {/* The default route ("/") loads the Login page */}
         <Route path="/" element={<Login />} />
-        
-        {/* Dashboard routes */}
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/staff" element={<StaffDashboard />} />
+
+        {/* Dashboard routes — each requires a valid token AND matching role */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRole="Admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/staff"
+          element={
+            <ProtectedRoute allowedRole="Staff">
+              <StaffDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

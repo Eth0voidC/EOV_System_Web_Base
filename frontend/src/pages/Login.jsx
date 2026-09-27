@@ -1,8 +1,8 @@
-import Loginform from '../components/loginform';
+import Loginform from '../components/Loginform';
 import './Login.css';
 
-function Login(){
-    return(
+function Login() {
+    return (
         <div className="login-page">
             <Loginform />
         </div>
