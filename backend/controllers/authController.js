@@ -1,8 +1,10 @@
-const pool = require('../config/db');
+const { pool, withTransaction } = require('../config/db');
 const bcrypt = require('bcrypt');
-
 const jwt = require('jsonwebtoken');
+
 // LOGIN — public
+// Read-only (SELECT only), so no transaction is needed here.
+
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -35,7 +37,7 @@ const login = async (req, res) => {
       username: user.username,
       role: user.role_name,
       token: jwt.sign(
-        {id: user.user_id, role: user.role_name},
+        { id: user.user_id, role: user.role_name },
         process.env.JWT_SECRET,
         { expiresIn: '8h' }
       ),
@@ -48,6 +50,9 @@ const login = async (req, res) => {
 };
 
 // CREATE USER — admin-only (used later by Admin Dashboard, not public)
+// Uses withTransaction so the duplicate-check + insert either both
+// succeed or both roll back together.
+
 const createUser = async (req, res) => {
   try {
     const { last_name, first_name, middle_initial, role_id, username, password } = req.body;
@@ -56,26 +61,47 @@ const createUser = async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const existing = await pool.query(
-      `SELECT * FROM "User" WHERE username = $1`,
-      [username]
-    );
+    const newUser = await withTransaction(async (client) => {
+      const existing = await client.query(
+        `SELECT 1 FROM "User" WHERE username = $1`,
+        [username]
+      );
 
-    if (existing.rows.length > 0) {
+      if (existing.rows.length > 0) {
+        // Throwing here triggers withTransaction's ROLLBACK + release.
+        // We tag the error so the outer catch knows this is a
+        // "duplicate" case rather than an unexpected failure.
+        const err = new Error('Username already exists');
+        err.isDuplicate = true;
+        throw err;
+      }
+
+      const password_hash = await bcrypt.hash(password, 10);
+
+      const result = await client.query(
+        `INSERT INTO "User" (last_name, first_name, middle_initial, role_id, username, password)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         RETURNING user_id, last_name, first_name, username, role_id`,
+        [last_name, first_name, middle_initial, role_id, username, password_hash]
+      );
+
+      return result.rows[0];
+    });
+
+    res.status(201).json(newUser);
+  } catch (err) {
+    if (err.isDuplicate) {
+      return res.status(409).json({ error: err.message });
+    }
+
+    // 23505 = unique_violation — the DB-level safety net that catches
+    // the race condition the SELECT check above can miss (two requests
+    // inserting the same username at nearly the same time).
+
+    if (err.code === '23505') {
       return res.status(409).json({ error: 'Username already exists' });
     }
 
-    const password_hash = await bcrypt.hash(password, 10);
-
-    const newUser = await pool.query(
-      `INSERT INTO "User" (last_name, first_name, middle_initial, role_id, username, password)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING user_id, last_name, first_name, username, role_id`,
-      [last_name, first_name, middle_initial, role_id, username, password_hash]
-    );
-
-    res.status(201).json(newUser.rows[0]);
-  } catch (err) {
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
   }
