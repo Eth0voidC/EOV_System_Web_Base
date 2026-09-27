@@ -1,0 +1,13 @@
+/* Global CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Global body styles */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f4f9; 
+  min-height: 100vh;
+}
