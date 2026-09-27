@@ -13,7 +13,7 @@ function Loginform() {
     const [errorMessage, setErrorMessage] = useState('');
     const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false); // NEW
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async () => {
@@ -28,10 +28,9 @@ function Loginform() {
             setHasError(true);
             return;
         }
-
+        
         const usernameInvalid = /[^a-zA-Z0-9.]/.test(username);
-        const passwordInvalid = /[^a-zA-Z0-9]/.test(password);
-        if (usernameInvalid || passwordInvalid) {
+        if (usernameInvalid) {
             setErrorMessage('invalid input');
             setHasError(true);
             setUsername('');
@@ -51,6 +50,15 @@ function Loginform() {
                 navigate('/admin');
             } else if (data.role === 'Staff') {
                 navigate('/staff');
+            } else {
+                // Unexpected role from the backend — don't leave the
+                // user stuck with no feedback and a logged-in session
+                // that goes nowhere.
+                setErrorMessage('Your account role is not recognized. Please contact an administrator.');
+                setHasError(true);
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                localStorage.removeItem('username');
             }
         } catch (err) {
             setErrorMessage(err.message || 'invalid username or password');
@@ -67,6 +75,12 @@ function Loginform() {
         if (hasError) {
             setHasError(false);
             setErrorMessage('');
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !isLoading) {
+            handleLogin();
         }
     };
 
@@ -87,6 +101,7 @@ function Loginform() {
                             placeholder={hasError ? "* Username" : "Enter your username"}
                             value={username}
                             onChange={(e) => handleInputChange(setUsername, e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className={hasError ? "input-error" : ""}
                         />
                     </div>
@@ -98,6 +113,7 @@ function Loginform() {
                             placeholder={hasError ? "* Password" : "Enter your password"}
                             value={password}
                             onChange={(e) => handleInputChange(setPassword, e.target.value)}
+                            onKeyDown={handleKeyDown}
                             className={hasError ? "input-error" : ""}
                         />
                         <button
