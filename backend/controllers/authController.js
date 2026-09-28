@@ -2,33 +2,91 @@ const { pool, withTransaction } = require('../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const DUMMY_HASH = bcrypt.hashSync('not-a-real-password', 10);
+
 // LOGIN — public
 // Read-only (SELECT only), so no transaction is needed here.
+
+// const login = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+
+//     if (!username || !password) {
+//       return res.status(400).json({ error: 'Username and password are required' });
+//     }
+
+//     const result = await pool.query(
+//       `SELECT u.user_id, u.username, u.password, u.role_id, r.role_name
+//        FROM "User" u
+//        JOIN roles r ON u.role_id = r.role_id
+//        WHERE u.username = $1`,
+//       [username]
+//     );
+
+//     if (result.rows.length === 0) {
+//       return res.status(401).json({ error: 'Invalid username or password' });
+//     }
+
+//     const user = result.rows[0];
+//     const isMatch = await bcrypt.compare(password, user.password);
+
+//     if (!isMatch) {
+//       return res.status(401).json({ error: 'Invalid username or password' });
+//     }
+
+//     res.status(200).json({
+//       id: user.user_id,
+//       username: user.username,
+//       role: user.role_name,
+//       token: jwt.sign(
+//         { id: user.user_id, role: user.role_name },
+//         process.env.JWT_SECRET,
+//         { expiresIn: '8h' }
+//       ),
+//       message: 'Login successful',
+//     });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).json({ error: 'Server error' });
+//   }
+// };
+
 
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    if (!username || !password) {
+    if (!username || !password ||
+        typeof username !== 'string' || typeof password !== 'string') {
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const result = await pool.query(
-      `SELECT u.user_id, u.username, u.password, u.role_id, r.role_name
-       FROM "User" u
-       JOIN roles r ON u.role_id = r.role_id
-       WHERE u.username = $1`,
-      [username]
-    );
+    let user;
+    const client = await pool.connect();
+    try {                                          // BEGIN TRY
+      await client.query('BEGIN');                 // BEGIN TRANSACTION
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      const result = await client.query(
+        `SELECT u.user_id, u.username, u.password, u.role_id, r.role_name
+         FROM "User" u
+         JOIN roles r ON u.role_id = r.role_id
+         WHERE u.username = $1`,
+        [username.trim()]
+      );
+      user = result.rows[0];
+
+      await client.query('COMMIT');                // COMMIT TRANSACTION
+    } catch (err) {                                // BEGIN CATCH
+      await client.query('ROLLBACK').catch(() => {}); // ROLLBACK TRANSACTION
+      throw err;                                   // outer catch sends the HTTP response
+    } finally {
+      client.release();                            // always return the connection
     }
 
-    const user = result.rows[0];
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Always run a compare so response time doesn't reveal whether the username exists
+    const isMatch = await bcrypt.compare(password, user ? user.password : DUMMY_HASH);
 
-    if (!isMatch) {
+    if (!user || !isMatch) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
@@ -43,7 +101,7 @@ const login = async (req, res) => {
       ),
       message: 'Login successful',
     });
-  } catch (err) {
+  } catch (err) {                                  // ERROR_MESSAGE()
     console.error(err.message);
     res.status(500).json({ error: 'Server error' });
   }
