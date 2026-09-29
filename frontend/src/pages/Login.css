@@ -1,9 +1,8 @@
 .login-page {
   display: flex;
-  justify-content: center;  /* Centers horizontally */
-  align-items: center;      /* Centers vertically */
-  min-height: 100vh;        /* Takes up 100% of the viewport height */
-  background-color: #f4f4f9; /* Optional: adds a nice page background color */
+  justify-content: center;
+  align-items: center;      
+  min-height: 100vh;        
   padding: 20px;
   box-sizing: border-box;
 }

@@ -1,8 +1,10 @@
-export default function StaffDashboard() {
+import '../components/HeaderSatff';
+import HeaderStaff from '../components/HeaderSatff';
+
+function StaffDashboard() {
   return (
-    <div>
-      <h2>Staff Dashboard</h2>
-      <p>Welcome! Here are your assigned tasks and tools.</p>
-    </div>
+    <HeaderStaff />
   );
 }
+
+export default StaffDashboard;

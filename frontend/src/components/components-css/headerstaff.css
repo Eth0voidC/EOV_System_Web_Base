@@ -1,0 +1,146 @@
+.header-container {
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    background-color: #325d32; 
+    padding: 15px 40px;
+    font-family: Arial, sans-serif;
+    gap: 50px; 
+    position: sticky;
+    top: 0;
+    z-index: 1000; 
+}
+
+.nav-menu {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    opacity: 0.8;
+}
+
+.nav-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    filter: invert(1) brightness(2); 
+}
+
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #ffffff;
+}
+
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; 
+    object-fit: cover;
+    border: 2px solid #ffffff; 
+}
+
+.welcome-text {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+
+.menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 15px;
+    padding: 0;
+}
+
+.menu-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    filter: invert(1) brightness(2); 
+}
+
+/* =========================================
+   RESPONSIVE DESIGN (Mobile & Tablet) 
+   ========================================= */
+@media (max-width: 1024px) {
+    .header-container {
+        gap: 20px;
+        padding: 15px 20px;
+    }
+    
+    .nav-menu {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        font-size: 15px;
+    }
+    
+    .nav-icon {
+        width: 18px;
+        height: 18px;
+    }
+}
+@media (max-width: 768px) {
+    .header-container {
+        padding: 12px 15px;
+        justify-content: space-between; 
+    }
+    
+    .nav-menu {
+        display: flex; 
+        gap: 12px;
+        flex-wrap: wrap; 
+        max-width: 70%;
+    }
+
+    .nav-link {
+        font-size: 13px; 
+    }
+
+    .nav-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .user-profile {
+        position: relative; 
+        right: auto;
+        gap: 10px;
+    }
+
+    .avatar {
+        width: 35px; 
+        height: 35px;
+    }
+
+    .welcome-text {
+        display: none; 
+    }
+
+    .menu-btn {
+        margin-left: 0;
+    }
+    
+    .menu-icon {
+        width: 25px;
+        height: 25px;
+    }
+}
