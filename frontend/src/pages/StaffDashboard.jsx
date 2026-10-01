@@ -1,5 +1,5 @@
 import '../components/HeaderSatff';
-import HeaderStaff from '../components/HeaderSatff';
+import HeaderStaff from '../components/HeaderStaff';
 
 function StaffDashboard() {
   return (
