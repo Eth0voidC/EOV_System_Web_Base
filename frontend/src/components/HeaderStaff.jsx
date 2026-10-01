@@ -10,7 +10,9 @@ import menuIcon from '../assets/menu-icon.png';
 import './components-css/headerstaff.css';
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
+
+const linkClass = ({ isActive }) => (isActive ? 'nav-link active' : 'nav-link');
 
 function HeaderStaff() {
 
@@ -22,28 +24,28 @@ function HeaderStaff() {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         localStorage.removeItem('username');
-        
-        navigate('/');
+
+        navigate('/', { replace: true });
     };
 
     return (
         <header className="header-container">
             <nav className="nav-menu">
-                <a href="#" className="nav-link">
+                <NavLink to="/staff" end className={linkClass}>
                     Dashboard <img src={dashIcon} alt="" className="nav-icon" />
-                </a>
-                <a href="#" className="nav-link">
+                </NavLink>
+                <NavLink to="/staff/records" className={linkClass}>
                     Records <img src={recordsIcon} alt="" className="nav-icon" />
-                </a>
-                <a href="#" className="nav-link">
+                </NavLink>
+                <NavLink to="/staff/inventory" className={linkClass}>
                     Inventory <img src={inventoryIcon} alt="" className="nav-icon" />
-                </a>
-                <a href="#" className="nav-link">
+                </NavLink>
+                <NavLink to="/staff/product" className={linkClass}>
                     Product <img src={productIcon} alt="" className="nav-icon" />
-                </a>
-                <a href="#" className="nav-link">
+                </NavLink>
+                <NavLink to="/staff/delivery" className={linkClass}>
                     Delivery <img src={deliveryIcon} alt="" className="nav-icon" />
-                </a>
+                </NavLink>
             </nav>
 
             <div className="user-profile">
@@ -51,20 +53,17 @@ function HeaderStaff() {
                 <div className="welcome-text">
                     <span>Welcome,</span>
                     <br />
-                    <span>User</span>
+                    <span>{localStorage.getItem('username') || 'User'}</span>
                 </div>
-                
-                {/* 4. Wrap the button and dropdown in a relative container */}
 
                 <div className="menu-container">
-                    <button 
-                        className="menu-btn" 
+                    <button
+                        className="menu-btn"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                     >
                         <img src={menuIcon} alt="Menu" className="menu-icon" />
                     </button>
 
-                    {/* 5. Conditionally render the popup if isMenuOpen is true */}
                     {isMenuOpen && (
                         <div className="dropdown-popup">
                             <button className="logout-btn" onClick={handleLogout}>

@@ -9,6 +9,13 @@ import AdminDashboard from './pages/AdminDashboard';
 import StaffDashboard from './pages/StaffDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
+//Import Staff Views
+import DashboardOverview from './components/components-staff/DashboardOverview';
+import RecordsView from './components/components-staff/RecordsView';
+import InventoryView from './components/components-staff/InventoryView';
+import ProductView from './components/components-staff/ProductView';
+import DeliveryView from './components/components-staff/DeliveryView';
+
 function App() {
   return (
     <Router>
@@ -16,7 +23,6 @@ function App() {
         {/* The default route ("/") loads the Login page */}
         <Route path="/" element={<Login />} />
 
-        {/* Dashboard routes — each requires a valid token AND matching role */}
         <Route
           path="/admin"
           element={
@@ -25,6 +31,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* StaffDashboard is the layout; children render inside its <Outlet /> */}
         <Route
           path="/staff"
           element={
@@ -32,7 +40,14 @@ function App() {
               <StaffDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<DashboardOverview />} />
+          <Route path="records" element={<RecordsView />} />
+          <Route path="inventory" element={<InventoryView />} />
+          <Route path="product" element={<ProductView />} />
+          <Route path="delivery" element={<DeliveryView />} />
+          <Route path="*" element={<p>Page not found</p>} />
+        </Route>
       </Routes>
     </Router>
   );

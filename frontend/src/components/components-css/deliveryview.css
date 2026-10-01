@@ -1,0 +1,257 @@
+.delivery-page {
+     padding: 10px 0 20px;
+}
+
+.delivery-title {
+    margin: 0 0 18px;
+    font-style: italic;
+    font-weight: normal;
+    font-size: 26px;
+}
+
+.delivery-panels {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 20px;
+}
+
+/* ---------- Panel ---------- */
+.delivery-panel {
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 230px);
+    min-height: 470px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.delivery-panel-header {
+    margin: 0;
+    padding: 14px 10px;
+    background: #46c068;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+}
+
+.delivery-panel-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 22px 22px;
+    min-height: 0;
+}
+
+.delivery-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 14px;
+}
+
+.delivery-clear-btn,
+.delivery-main-btn {
+    padding: 9px 30px;
+    border: 1.5px solid #000;
+    border-radius: 25px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.delivery-clear-btn {
+    background: #e8e6e6;
+}
+
+.delivery-main-btn {
+    background: #72ef6a;
+}
+
+.delivery-clear-btn:disabled,
+.delivery-main-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---------- Left: form ---------- */
+.delivery-form {
+    margin-top: 70px;
+}
+
+.delivery-label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.delivery-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.delivery-search-icon {
+    position: absolute;
+    left: 10px;
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.delivery-search input,
+.delivery-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    background: #e0e0e0;
+    border: 1.5px solid #000;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+}
+
+.delivery-search input {
+    padding-left: 36px;
+}
+
+.delivery-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 2px 0 0;
+    padding: 0;
+    list-style: none;
+    background: #ffffff;
+    border: 1.5px solid #000;
+    border-radius: 6px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.delivery-suggestions li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.delivery-suggestions li:hover {
+    background: #e1edd6;
+}
+
+.suggestion-stock {
+    color: #666;
+    font-size: 12px;
+}
+
+.delivery-error {
+    margin: 12px 0 0;
+    color: #b3261d;
+    font-size: 13px;
+}
+
+/* ---------- Right: list ---------- */
+.receive-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr 40px;
+    align-items: center;
+    gap: 8px;
+}
+
+.receive-header-row {
+    font-weight: bold;
+    font-size: 13px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #777;
+}
+
+.receive-list {
+    flex: 1;
+    min-height: 100px;
+    overflow-y: auto;
+}
+
+.receive-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #777;
+    font-size: 14px;
+}
+
+.receive-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receive-remove-btn {
+    width: 32px;
+    height: 28px;
+    border: 1.5px solid #000;
+    border-radius: 8px;
+    background: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.receive-remove-btn:hover {
+    background: #fde4e2;
+}
+
+.receive-empty {
+    text-align: center;
+    color: #777;
+    margin-top: 30px;
+}
+
+.delivery-success {
+    margin: 8px 0 0;
+    text-align: center;
+    color: #2d7a27;
+    font-weight: bold;
+}
+
+.receive-summary {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* all three start at the same top line */
+    gap: 40px;
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.receive-summary p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.receive-datetime p + p {
+    margin-top: 4px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .delivery-panels {
+        grid-template-columns: 1fr;
+    }
+    .delivery-panel {
+        height: auto;
+    }
+    .delivery-form {
+        margin-top: 20px;
+    }
+    .delivery-footer {
+        margin-top: 20px;
+    }
+}
