@@ -9,10 +9,25 @@ import menuIcon from '../assets/menu-icon.png';
 
 import './components-css/headerstaff.css';
 
-function HeaderStaff(){
-    return(
-        <header className="header-container">
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+function HeaderStaff() {
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        
+        navigate('/');
+    };
+
+    return (
+        <header className="header-container">
             <nav className="nav-menu">
                 <a href="#" className="nav-link">
                     Dashboard <img src={dashIcon} alt="" className="nav-icon" />
@@ -38,9 +53,26 @@ function HeaderStaff(){
                     <br />
                     <span>User</span>
                 </div>
-                <button className="menu-btn">
-                    <img src={menuIcon} alt="Menu" className="menu-icon" />
-                </button>
+                
+                {/* 4. Wrap the button and dropdown in a relative container */}
+
+                <div className="menu-container">
+                    <button 
+                        className="menu-btn" 
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    >
+                        <img src={menuIcon} alt="Menu" className="menu-icon" />
+                    </button>
+
+                    {/* 5. Conditionally render the popup if isMenuOpen is true */}
+                    {isMenuOpen && (
+                        <div className="dropdown-popup">
+                            <button className="logout-btn" onClick={handleLogout}>
+                                Log Out
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </header>
     );

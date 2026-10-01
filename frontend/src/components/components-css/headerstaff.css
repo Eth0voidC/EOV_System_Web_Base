@@ -76,6 +76,40 @@
     filter: invert(1) brightness(2); 
 }
 
+.menu-container {
+    position: relative;
+}
+
+.dropdown-popup {
+    position: absolute;
+    top: 45px; 
+    right: 0;  
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    min-width: 120px;
+    z-index: 1005; 
+}
+
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #d93025; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+    background-color: #b3261d;
+}
+
 /* =========================================
    RESPONSIVE DESIGN (Mobile & Tablet) 
    ========================================= */
