@@ -2,9 +2,41 @@ import '../components-css/shoppingcart.css';
 
 const CURRENCY = '$'; // change to your currency symbol
 
-function ShoppingCart({ items, onClose, onIncrease, onDecrease, onRemove, onClear, onSubmit }) {
+function ShoppingCart({
+    items,
+    employees,
+    employeeQuery,
+    selectedEmployee,
+    onEmployeeQueryChange,
+    onEmployeeSelect,
+    onClose,
+    onIncrease,
+    onDecrease,
+    onRemove,
+    onClear,
+    onSubmit,
+}) {
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const isEmpty = items.length === 0;
+
+    const isRestricted = selectedEmployee?.status === 'Restricted';
+    const canSubmit = !isEmpty && selectedEmployee && !isRestricted;
+
+    // Suggestions while typing (hidden once an employee is chosen)
+    const suggestions =
+        employeeQuery.trim() && !selectedEmployee
+            ? employees
+                  .filter((emp) => emp.name.toLowerCase().includes(employeeQuery.trim().toLowerCase()))
+                  .slice(0, 6)
+            : [];
+
+    // Tells the staff why Submit is disabled
+    let hint = '';
+    if (isRestricted) {
+        hint = 'This employee is restricted and cannot make purchases.';
+    } else if (!isEmpty && !selectedEmployee) {
+        hint = 'Choose an employee from the suggestions to submit.';
+    }
 
     return (
         // Clicking the dark background closes the popup
@@ -12,6 +44,47 @@ function ShoppingCart({ items, onClose, onIncrease, onDecrease, onRemove, onClea
             {/* stopPropagation so clicking inside the popup doesn't close it */}
             <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
                 <h2 className="cart-title">Shopping Cart</h2>
+
+                {/* ---------- Employee ---------- */}
+                <div className="cart-employee">
+                    <label className="cart-employee-label">Employee's Name :</label>
+
+                    <div className="cart-employee-field">
+                        <input
+                            type="text"
+                            value={employeeQuery}
+                            onChange={(e) => onEmployeeQueryChange(e.target.value)}
+                            placeholder="Type a name..."
+                        />
+
+                        {suggestions.length > 0 && (
+                            <ul className="employee-suggestions">
+                                {suggestions.map((emp) => (
+                                    <li key={emp.id} onClick={() => onEmployeeSelect(emp)}>
+                                        <span>{emp.name}</span>
+                                        <span className={`status-badge status-${emp.status.toLowerCase()}`}>
+                                            {emp.status}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        {employeeQuery.trim() && !selectedEmployee && suggestions.length === 0 && (
+                            <ul className="employee-suggestions">
+                                <li className="employee-no-match">No employee found.</li>
+                            </ul>
+                        )}
+                    </div>
+
+                    {selectedEmployee && (
+                        <span className={`status-badge status-${selectedEmployee.status.toLowerCase()}`}>
+                            {selectedEmployee.status}
+                        </span>
+                    )}
+                </div>
+
+                {hint && <p className="cart-hint">{hint}</p>}
 
                 <div className="cart-row cart-header-row">
                     <span>Products Name</span>
@@ -64,10 +137,10 @@ function ShoppingCart({ items, onClose, onIncrease, onDecrease, onRemove, onClea
                 </div>
 
                 <div className="cart-footer">
-                    <button type="button" className="cart-clear-btn" onClick={onClear} disabled={isEmpty}>
+                    <button type="button" className="cart-clear-btn" onClick={onClear} disabled={isEmpty && !selectedEmployee && !employeeQuery}>
                         Clear
                     </button>
-                    <button type="button" className="cart-submit-btn" onClick={onSubmit} disabled={isEmpty}>
+                    <button type="button" className="cart-submit-btn" onClick={onSubmit} disabled={!canSubmit}>
                         Submit
                     </button>
                 </div>

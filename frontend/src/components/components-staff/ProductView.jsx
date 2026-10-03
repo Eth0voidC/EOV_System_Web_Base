@@ -17,10 +17,26 @@ const sampleProducts = Array.from({ length: 14 }, (_, i) => ({
     image: '',
 }));
 
+// Temporary sample employees. Later this comes from the API.
+const sampleEmployees = [
+    { id: 1, name: 'Maria Reyes', status: 'Active' },
+    { id: 2, name: 'Mark Santos', status: 'Active' },
+    { id: 3, name: 'Maricel Cruz', status: 'Restricted' },
+    { id: 4, name: 'John Dela Cruz', status: 'Active' },
+    { id: 5, name: 'Jane Garcia', status: 'Restricted' },
+    { id: 6, name: 'Paolo Mendoza', status: 'Active' },
+    { id: 7, name: 'Jay Labastida', status: 'Restricted' },
+    { id: 8, name: 'John Eukie Revilla', status: 'Restricted' },
+];
+
 function ProductView() {
     const [search, setSearch] = useState('');
     const [cartItems, setCartItems] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+    // Employee picked in the cart
+    const [employeeQuery, setEmployeeQuery] = useState('');
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
 
     const filteredProducts = sampleProducts.filter((product) =>
         product.name.toLowerCase().includes(search.trim().toLowerCase())
@@ -80,12 +96,41 @@ function ProductView() {
         setCartItems((prev) => prev.filter((item) => item.id !== id));
     };
 
-    const handleClear = () => setCartItems([]);
+    // Typing again means the old choice no longer applies
+    const handleEmployeeQueryChange = (value) => {
+        setEmployeeQuery(value);
+        setSelectedEmployee(null);
+    };
+
+    const handleEmployeeSelect = (employee) => {
+        setSelectedEmployee(employee);
+        setEmployeeQuery(employee.name);
+    };
+
+    const resetEmployee = () => {
+        setEmployeeQuery('');
+        setSelectedEmployee(null);
+    };
+
+    const handleClear = () => {
+        setCartItems([]);
+        resetEmployee();
+    };
 
     const handleSubmit = () => {
-        // Later: send cartItems to the API here (create the order, reduce stock)
-        console.log('Submitting order:', cartItems);
+        // Safety check (the button is already disabled in these cases)
+        if (!selectedEmployee || selectedEmployee.status !== 'Active' || cartItems.length === 0) {
+            return;
+        }
+
+        // Later: send this to the API here (create the order, reduce stock)
+        console.log('Submitting order:', {
+            employee: selectedEmployee,
+            items: cartItems,
+        });
+
         setCartItems([]);
+        resetEmployee();
         setIsCartOpen(false);
     };
 
@@ -145,6 +190,11 @@ function ProductView() {
             {isCartOpen && (
                 <ShoppingCart
                     items={cartItems}
+                    employees={sampleEmployees}
+                    employeeQuery={employeeQuery}
+                    selectedEmployee={selectedEmployee}
+                    onEmployeeQueryChange={handleEmployeeQueryChange}
+                    onEmployeeSelect={handleEmployeeSelect}
                     onClose={() => setIsCartOpen(false)}
                     onIncrease={handleIncrease}
                     onDecrease={handleDecrease}
