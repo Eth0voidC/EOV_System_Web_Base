@@ -1,0 +1,211 @@
+.inventory-page {
+    padding: 10px 0 20px;
+}
+
+.inventory-title {
+    margin: 0 0 14px;
+    font-style: italic;
+    font-weight: normal;
+    font-size: 26px;
+}
+
+/* ---------- Total cards ---------- */
+/* .inventory-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+} */
+
+.inventory-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 400px)); /* each card is at most 340px wide */
+    justify-content: center; /* cards sit on the left, next to each other */
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.inventory-stat-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 14px 24px 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); /* floating look, like Delivery */
+}
+
+.inventory-stat-card h3 {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #111;
+}
+
+.inventory-stat-card p {
+    margin: 6px 0 0;
+    font-size: 40px;
+    font-weight: bold;
+    color: #000;
+}
+
+/* ---------- List panel ---------- */
+.inventory-panel {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 360px);
+    min-height: 340px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.inventory-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+/* Search pill */
+.inventory-search {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 395px;
+    background: #f3f9f0;
+    border: 1.5px solid #222;
+    border-radius: 30px;
+    padding: 3px;
+}
+
+.inventory-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 6px 14px;
+    font-size: 15px;
+}
+
+.inventory-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 28px;
+    border: none;
+    border-radius: 20px;
+    background: #4a9444;
+    cursor: pointer;
+}
+
+.inventory-search-btn:hover {
+    background: #3b7a36;
+}
+
+.inventory-search-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1); /* turns the icon white */
+}
+
+/* Green category dropdown */
+.inventory-filter {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 280px;
+    max-width: 100%;
+    padding: 7px 40px 7px 22px;
+    background-color: #46c068;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'><polygon points='0,0 14,0 7,10' fill='white'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    border: 1px solid #222;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.inventory-filter option {
+    color: #000;
+    background: #ffffff;
+}
+
+.inventory-list-title {
+    margin: 0 0 0 20px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 26px;
+    color: #3a8a35;
+}
+
+/* ---------- Table ---------- */
+.inventory-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.inventory-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.inventory-table th,
+.inventory-table td {
+    border: 1px solid #333;
+    padding: 0 10px;
+    height: 56px;
+    text-align: center;
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inventory-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #72c5d1;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Alternating row colors */
+.inventory-table tbody tr:nth-child(odd) {
+    background: #cadbdf;
+}
+
+.inventory-table tbody tr:nth-child(even) {
+    background: #e9f4e4;
+}
+
+/* Hover must come after the stripes, or it won't show */
+.inventory-table tbody tr:hover {
+    background: #d9ecd2;
+}
+
+.inventory-no-results {
+    color: #666;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .inventory-stats {
+        grid-template-columns: 1fr;
+    }
+    .inventory-panel {
+        height: auto;
+        min-height: 0;
+    }
+    .inventory-list-title {
+        margin-left: 0;
+    }
+}
