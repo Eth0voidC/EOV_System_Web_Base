@@ -1,21 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import SearchIcon from '../../assets/search-icon.png';
+import { getAllProducts } from '../../api/products';
 
 import '../components-css/inventoryview.css';
 
 const CURRENCY = '$'; // change to your currency symbol
-
-// Temporary sample data. Later this comes from the API.
-const categories = ['Beverages', 'Snacks', 'Canned Goods', 'Household', 'Personal Care'];
-
-const sampleProducts = Array.from({ length: 20 }, (_, i) => ({
-    id: `ITM-${String(i + 1).padStart(3, '0')}`,
-    category: categories[i % categories.length],
-    name: `Product ${i + 1}`,
-    price: 50 + i * 12.5,
-    stock: (i + 1) * 5,
-}));
 
 const formatMoney = (value) =>
     `${CURRENCY}${value.toLocaleString(undefined, {
@@ -24,9 +14,37 @@ const formatMoney = (value) =>
     })}`;
 
 function InventoryView() {
-    const [products] = useState(sampleProducts);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('All');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        getAllProducts(token)
+            .then((data) => {
+                setProducts(
+                    data.map((p) => ({
+                        id: p.product_item_id,
+                        category: p.category_name,
+                        name: p.product_name,
+                        price: Number(p.price),
+                        stock: p.stock_quantity,
+                    }))
+                );
+            })
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
+    }, []);
+
+    // Build the category filter list from real data instead of a hardcoded array
+    const categories = useMemo(
+        () => [...new Set(products.map((p) => p.category))].sort(),
+        [products]
+    );
 
     // Cards show the totals of the whole inventory (not affected by search/filter)
     const totalStockItems = products.reduce((sum, p) => sum + p.stock, 0);
@@ -39,9 +57,12 @@ function InventoryView() {
         const matchesSearch =
             !query ||
             p.name.toLowerCase().includes(query) ||
-            p.id.toLowerCase().includes(query);
+            String(p.id).toLowerCase().includes(query);
         return matchesCategory && matchesSearch;
     });
+
+    if (loading) return <p>Loading inventory...</p>;
+    if (error) return <p className="inventory-no-results">Error: {error}</p>;
 
     return (
         <div className="inventory-page">

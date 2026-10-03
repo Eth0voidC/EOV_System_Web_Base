@@ -108,24 +108,30 @@
 }
 
 .product-image-wrapper {
+    height: 150px;           /* same height for every card */
     padding: 8px 8px 0;
-    aspect-ratio: 1 / 0.9;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
-.product-image,
-.product-image-placeholder {
+.product-image {
+    display: block;
     width: 100%;
     height: 100%;
-    border-radius: 10px 10px 0 0;
-    object-fit: cover;
+    object-fit: contain;     /* whole photo visible, no cropping or stretching */
+    background: #ffffff;
 }
 
 /* Sky-to-grass look when a product has no image yet */
 .product-image-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px 10px 0 0;
     background: linear-gradient(to bottom, #c4e6fb 0%, #eaf6fd 60%, #b5d56a 60%, #8aa50f 100%);
 }
 
 .product-info {
+    margin-top: auto;        /* green panel always sits at the bottom */
     background: #418c35;
     color: #ffffff;
     padding: 10px 8px 14px;

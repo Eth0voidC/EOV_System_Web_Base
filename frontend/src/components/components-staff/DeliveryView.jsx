@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
 
 import SearchIcon from '../../assets/search-icon.png';
+import { getAllProducts } from '../../api/products';
+import { createDelivery } from '../../api/delivery';
 
 import '../components-css/deliveryview.css';
 
-// Temporary sample data. Later this comes from the API.
-const initialProducts = Array.from({ length: 14 }, (_, i) => ({
-    id: i + 1,
-    name: `Product ${i + 1}`,
-    stock: (i + 1) * 5,
-}));
-
 function DeliveryView() {
-    const [products, setProducts] = useState(initialProducts);
+    const [products, setProducts] = useState([]);
+    const [loadingProducts, setLoadingProducts] = useState(true);
+    const [loadError, setLoadError] = useState('');
 
     // Receive form
     const [query, setQuery] = useState('');
@@ -23,15 +20,38 @@ function DeliveryView() {
     // Receive list
     const [receiveList, setReceiveList] = useState([]);
     const [message, setMessage] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
-    // Automatic date and time (not editable)
+    // Automatic date and time (display only — the actual saved date/time
+    // comes from the database, set at the moment of submit)
     const [now, setNow] = useState(new Date());
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
 
-    // Product suggestions while typing (hidden once a product is chosen)
+    const fetchProducts = () => {
+        const token = localStorage.getItem('token');
+        setLoadingProducts(true);
+
+        getAllProducts(token)
+            .then((data) => {
+                setProducts(
+                    data.map((p) => ({
+                        id: p.product_item_id,
+                        name: p.product_name,
+                        stock: p.stock_quantity,
+                    }))
+                );
+            })
+            .catch((err) => setLoadError(err.message))
+            .finally(() => setLoadingProducts(false));
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
     const suggestions =
         query.trim() && !selected
             ? products
@@ -44,7 +64,7 @@ function DeliveryView() {
 
     const handleQueryChange = (e) => {
         setQuery(e.target.value);
-        setSelected(null); // typing again means the old choice no longer applies
+        setSelected(null);
         setFormError('');
     };
 
@@ -54,7 +74,6 @@ function DeliveryView() {
         setFormError('');
     };
 
-    // Numbers only
     const handleQuantityChange = (e) => {
         setQuantity(e.target.value.replace(/\D/g, ''));
         setFormError('');
@@ -67,98 +86,36 @@ function DeliveryView() {
         setFormError('');
     };
 
-    // const handleAddToList = () => {
-    //     if (!selected) {
-    //         setFormError('Please choose a product from the suggestions.');
-    //         return;
-    //     }
-
-    //     const qty = parseInt(quantity, 10);
-    //     if (!qty || qty <= 0) {
-    //         setFormError('Quantity must be greater than 0.');
-    //         return;
-    //     }
-
-    //     setReceiveList((prev) => {
-    //         const existing = prev.find((item) => item.id === selected.id);
-
-    //         // Same product twice: add the quantities together
-    //         if (existing) {
-    //             return prev.map((item) =>
-    //                 item.id === selected.id ? { ...item, received: item.received + qty } : item
-    //             );
-    //         }
-
-    //         return [
-    //             ...prev,
-    //             {
-    //                 id: selected.id,
-    //                 name: selected.name,
-    //                 currentStock: selected.stock,
-    //                 received: qty,
-    //             },
-    //         ];
-    //     });
-
-    //     setMessage('');
-    //     clearForm();
-    // };
-
     const handleAddToList = () => {
-    const name = query.trim();
-
-    // TESTING ONLY: allow typing a name that isn't in the product list
-    let product = selected;
-    if (!product) {
-        if (!name) {
-            setFormError('Please type or choose a product name.');
+        if (!selected) {
+            setFormError('Please choose a product from the suggestions.');
             return;
         }
-        // If the typed name matches an existing product, use that one
-        product =
-            products.find((p) => p.name.toLowerCase() === name.toLowerCase()) || {
-                id: `test-${Date.now()}`,
-                name,
-                stock: 0,
-                isNew: true,
-            };
-    }
 
-    const qty = parseInt(quantity, 10);
-    if (!qty || qty <= 0) {
-        setFormError('Quantity must be greater than 0.');
-        return;
-    }
-
-    setReceiveList((prev) => {
-        // Same product (by id or by name): add the quantities together
-        const existing = prev.find(
-            (item) =>
-                item.id === product.id ||
-                item.name.toLowerCase() === product.name.toLowerCase()
-        );
-
-        if (existing) {
-            return prev.map((item) =>
-                item === existing ? { ...item, received: item.received + qty } : item
-            );
+        const qty = parseInt(quantity, 10);
+        if (!qty || qty <= 0) {
+            setFormError('Quantity must be greater than 0.');
+            return;
         }
 
-        return [
-            ...prev,
-            {
-                id: product.id,
-                name: product.name,
-                currentStock: product.stock,
-                received: qty,
-                isNew: product.isNew || false,
-            },
-        ];
-    });
+        setReceiveList((prev) => {
+            const existing = prev.find((item) => item.id === selected.id);
+
+            if (existing) {
+                return prev.map((item) =>
+                    item.id === selected.id ? { ...item, received: item.received + qty } : item
+                );
+            }
+
+            return [
+                ...prev,
+                { id: selected.id, name: selected.name, currentStock: selected.stock, received: qty },
+            ];
+        });
 
         setMessage('');
         clearForm();
-   };
+    };
 
     const handleRemove = (id) => {
         setReceiveList((prev) => prev.filter((item) => item.id !== id));
@@ -169,61 +126,39 @@ function DeliveryView() {
         setMessage('');
     };
 
-    // const handleSubmit = () => {
-    //     // Later: send this to the API (save the delivery and increase the stock)
-    //     const delivery = {
-    //         receivedBy: localStorage.getItem('username'),
-    //         receivedAt: now.toISOString(),
-    //         items: receiveList.map(({ id, name, received }) => ({ id, name, received })),
-    //     };
-    //     console.log('Submitting delivery:', delivery);
+    const handleSubmit = async () => {
+        if (receiveList.length === 0) return;
 
-    //     // For now, update the sample stock so you can see the result
-    //     setProducts((prev) =>
-    //         prev.map((product) => {
-    //             const item = receiveList.find((i) => i.id === product.id);
-    //             return item ? { ...product, stock: product.stock + item.received } : product;
-    //         })
-    //     );
+        setSubmitting(true);
+        setMessage('');
 
-    //     setReceiveList([]);
-    //     setMessage('Delivery submitted!');
-    // };
+        try {
+            const token = localStorage.getItem('token');
+            const items = receiveList.map((item) => ({
+                product_item_id: item.id,
+                quantity_received: item.received,
+            }));
 
-    const handleSubmit = () => {
-    // Later: send this to the API (save the delivery and increase the stock)
-    const delivery = {
-        receivedBy: localStorage.getItem('username'),
-        receivedAt: now.toISOString(),
-        items: receiveList.map(({ id, name, received }) => ({ id, name, received })),
+            await createDelivery(token, items);
+
+            setReceiveList([]);
+            setMessage('Delivery submitted!');
+            fetchProducts(); // refresh stock numbers from the database
+        } catch (err) {
+            setMessage(`Error: ${err.message}`);
+        } finally {
+            setSubmitting(false);
+        }
     };
-    console.log('Submitting delivery:', delivery);
 
-    // For now, update the sample stock so you can see the result
-    setProducts((prev) => {
-        const updated = prev.map((product) => {
-            const item = receiveList.find((i) => i.id === product.id);
-            return item ? { ...product, stock: product.stock + item.received } : product;
-        });
-
-        // TESTING ONLY: products that didn't exist before are added to the list
-        const newProducts = receiveList
-            .filter((i) => i.isNew)
-            .map((i) => ({ id: i.id, name: i.name, stock: i.received }));
-
-        return [...updated, ...newProducts];
-    });
-
-        setReceiveList([]);
-        setMessage('Delivery submitted!');
-    };
+    if (loadingProducts) return <p>Loading products...</p>;
+    if (loadError) return <p className="delivery-error">Error: {loadError}</p>;
 
     return (
         <div className="delivery-page">
             <h2 className="delivery-title">Delivery</h2>
 
             <div className="delivery-panels">
-                {/* ---------- Left: Receive Form ---------- */}
                 <section className="delivery-panel">
                     <h3 className="delivery-panel-header">Receive Form</h3>
 
@@ -275,7 +210,6 @@ function DeliveryView() {
                     </div>
                 </section>
 
-                {/* ---------- Right: Receive Product List ---------- */}
                 <section className="delivery-panel">
                     <h3 className="delivery-panel-header">Receive Product List</h3>
 
@@ -311,23 +245,19 @@ function DeliveryView() {
                             )}
                         </div>
 
-                        {message && <p className="delivery-success">{message}</p>}
+                        {message && (
+                            <p className={message.startsWith('Error') ? 'delivery-error' : 'delivery-success'}>
+                                {message}
+                            </p>
+                        )}
 
                         <div className="receive-summary">
                             <div className="receive-datetime">
-                                <p>
-                                    <strong>Received Date:</strong> {now.toLocaleDateString()}
-                                </p>
-                                <p>
-                                    <strong>Received Time:</strong> {now.toLocaleTimeString()}
-                                </p>
+                                <p><strong>Received Date:</strong> {now.toLocaleDateString()}</p>
+                                <p><strong>Received Time:</strong> {now.toLocaleTimeString()}</p>
                             </div>
-                            <p className="receive-total">
-                                <strong>Total Received Items:</strong> {totalReceived}
-                            </p>
-                            <p className="receive-total">
-                                <strong>Total Units Received:</strong> {totalUnits}
-                            </p>
+                            <p className="receive-total"><strong>Total Received Items:</strong> {totalReceived}</p>
+                            <p className="receive-total"><strong>Total Units Received:</strong> {totalUnits}</p>
                         </div>
 
                         <div className="delivery-footer">
@@ -335,7 +265,7 @@ function DeliveryView() {
                                 type="button"
                                 className="delivery-clear-btn"
                                 onClick={handleClearList}
-                                disabled={receiveList.length === 0}
+                                disabled={receiveList.length === 0 || submitting}
                             >
                                 Clear
                             </button>
@@ -343,9 +273,9 @@ function DeliveryView() {
                                 type="button"
                                 className="delivery-main-btn"
                                 onClick={handleSubmit}
-                                disabled={receiveList.length === 0}
+                                disabled={receiveList.length === 0 || submitting}
                             >
-                                Submit
+                                {submitting ? 'Submitting...' : 'Submit'}
                             </button>
                         </div>
                     </div>
