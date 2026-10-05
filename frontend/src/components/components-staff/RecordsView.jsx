@@ -1,72 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import SearchIcon from '../../assets/search-icon.png';
 import Viewdetails from '../../assets/view-details-icon.png';
-
+import { getAllEmployees } from '../../api/employees';
+import { getEmployeeRecords } from '../../api/records';
 import { formatMoney, formatDate } from './recordsHelpers';
 import { TransactionBreakdown, DeductionBreakdown } from './RecordModals';
 import '../components-css/recordsview.css';
 
-// Temporary sample data. Later this comes from the API.
-const sampleEmployees = [
-    {
-        id: 1,
-        code: 'EMP-001',
-        name: 'Maria Reyes',
-        employmentStatus: 'Regular',
-        accountStatus: 'Active',
-        transactions: [
-            { id: 101, date: '2026-09-28', status: 'Pending', items: [{ name: 'Product 1', qty: 2, price: 50 }, { name: 'Product 3', qty: 1, price: 75 }] },
-            { id: 102, date: '2026-09-20', status: 'Pending', items: [{ name: 'Product 2', qty: 3, price: 62.5 }] },
-            { id: 103, date: '2026-09-12', status: 'Paid', items: [{ name: 'Product 4', qty: 1, price: 87.5 }, { name: 'Product 5', qty: 1, price: 100 }] },
-            { id: 104, date: '2026-09-03', status: 'Paid', items: [{ name: 'Product 6', qty: 2, price: 112.5 }] },
-        ],
-        deductions: [
-            { id: 201, date: '2026-09-15', periodStart: '2026-09-01', periodEnd: '2026-09-15', entries: [{ date: '2026-09-03', amount: 225 }, { date: '2026-09-12', amount: 187.5 }] },
-            { id: 202, date: '2026-08-31', periodStart: '2026-08-16', periodEnd: '2026-08-31', entries: [{ date: '2026-08-22', amount: 150 }] },
-        ],
-    },
-    {
-        id: 2,
-        code: 'EMP-002',
-        name: 'Mark Santos',
-        employmentStatus: 'Regular',
-        accountStatus: 'Active',
-        transactions: [
-            { id: 301, date: '2026-09-25', status: 'Pending', items: [{ name: 'Product 7', qty: 1, price: 125 }] },
-            { id: 302, date: '2026-09-10', status: 'Paid', items: [{ name: 'Product 1', qty: 4, price: 50 }] },
-        ],
-        deductions: [
-            { id: 401, date: '2026-09-15', periodStart: '2026-09-01', periodEnd: '2026-09-15', entries: [{ date: '2026-09-10', amount: 200 }] },
-        ],
-    },
-    {
-        id: 3,
-        code: 'EMP-003',
-        name: 'Maricel Cruz',
-        employmentStatus: 'Probationary',
-        accountStatus: 'Restricted',
-        transactions: [
-            { id: 501, date: '2026-09-18', status: 'Pending', items: [{ name: 'Product 2', qty: 2, price: 62.5 }, { name: 'Product 8', qty: 1, price: 137.5 }] },
-        ],
-        deductions: [],
-    },
-];
-
 const sumItems = (items) => items.reduce((sum, i) => sum + i.qty * i.price, 0);
 
 function RecordsView() {
+    const [employees, setEmployees] = useState([]);
     const [query, setQuery] = useState('');
     const [employee, setEmployee] = useState(null);
+    const [records, setRecords] = useState({ balance: 0, transactions: [], deductions: [] });
     const [statusFilter, setStatusFilter] = useState(''); // '' = all
+    const [loadingRecords, setLoadingRecords] = useState(false);
+    const [error, setError] = useState('');
 
     const [viewTransaction, setViewTransaction] = useState(null);
     const [viewDeduction, setViewDeduction] = useState(null);
 
+    // Load the employee list once (Inactive employees stay searchable: their history still matters)
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        getAllEmployees(token)
+            .then((data) =>
+                setEmployees(
+                    data.map((e) => ({
+                        id: e.employee_id,
+                        code: e.employee_code,
+                        name: `${e.last_name}, ${e.first_name}`,
+                        employmentStatus: e.employment_status,
+                        accountStatus: e.account_status,
+                    }))
+                )
+            )
+            .catch((err) => setError(err.message));
+    }, []);
+
     // Suggestions while typing (hidden once an employee is chosen)
     const suggestions =
         query.trim() && !employee
-            ? sampleEmployees
+            ? employees
                   .filter((e) => e.name.toLowerCase().includes(query.trim().toLowerCase()))
                   .slice(0, 6)
             : [];
@@ -74,32 +52,41 @@ function RecordsView() {
     const handleQueryChange = (e) => {
         setQuery(e.target.value);
         setEmployee(null); // typing again means the old choice no longer applies
+        setRecords({ balance: 0, transactions: [], deductions: [] });
         setStatusFilter('');
+        setError('');
     };
 
-    const handleSelect = (emp) => {
+    const handleSelect = async (emp) => {
         setEmployee(emp);
         setQuery(emp.name);
         setStatusFilter('');
+        setError('');
+        setLoadingRecords(true);
+
+        try {
+            const token = localStorage.getItem('token');
+            setRecords(await getEmployeeRecords(token, emp.id));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoadingRecords(false);
+        }
     };
 
-    // Newest first
+    // Newest first (the API already sorts, this keeps the filter safe)
     const byDateDesc = (a, b) => b.date.localeCompare(a.date);
 
     const transactions = employee
-        ? employee.transactions
+        ? records.transactions
               .filter((t) => !statusFilter || t.status === statusFilter)
               .sort(byDateDesc)
         : [];
 
-    const deductions = employee ? [...employee.deductions].sort(byDateDesc) : [];
+    const deductions = employee ? [...records.deductions].sort(byDateDesc) : [];
 
-    // Balance = everything still Pending (change this rule if yours is different)
-    const balance = employee
-        ? employee.transactions
-              .filter((t) => t.status === 'Pending')
-              .reduce((sum, t) => sum + sumItems(t.items), 0)
-        : null;
+    // Balance comes from employee_balance, the same number the cart updates on every purchase
+    const balance = employee ? records.balance : null;
 
     return (
         <div className="records-page">
@@ -139,6 +126,9 @@ function RecordsView() {
                     </div>
                 </div>
             </div>
+
+            {error && <p className="rec-empty" style={{ color: '#b3261d' }}>{error}</p>}
+            {loadingRecords && <p className="rec-empty">Loading records...</p>}
 
             <div className="records-layout">
                 {/* ---------- Left column ---------- */}
@@ -189,7 +179,7 @@ function RecordsView() {
 
                         <div className="rec-list">
                             {!employee && <p className="rec-empty">Search an employee to see records.</p>}
-                            {employee && deductions.length === 0 && (
+                            {employee && !loadingRecords && deductions.length === 0 && (
                                 <p className="rec-empty">No deductions yet.</p>
                             )}
 
@@ -238,7 +228,7 @@ function RecordsView() {
 
                         <div className="rec-list">
                             {!employee && <p className="rec-empty">Search an employee to see records.</p>}
-                            {employee && transactions.length === 0 && (
+                            {employee && !loadingRecords && transactions.length === 0 && (
                                 <p className="rec-empty">No transactions found.</p>
                             )}
 

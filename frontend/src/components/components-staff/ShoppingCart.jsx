@@ -15,12 +15,14 @@ function ShoppingCart({
     onRemove,
     onClear,
     onSubmit,
+    submitting = false,
+    submitError = '',
 }) {
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const isEmpty = items.length === 0;
 
     const isRestricted = selectedEmployee?.status === 'Restricted';
-    const canSubmit = !isEmpty && selectedEmployee && !isRestricted;
+    const canSubmit = !isEmpty && selectedEmployee && !isRestricted && !submitting;
 
     // Suggestions while typing (hidden once an employee is chosen)
     const suggestions =
@@ -55,6 +57,7 @@ function ShoppingCart({
                             value={employeeQuery}
                             onChange={(e) => onEmployeeQueryChange(e.target.value)}
                             placeholder="Type a name..."
+                            disabled={submitting}
                         />
 
                         {suggestions.length > 0 && (
@@ -85,6 +88,7 @@ function ShoppingCart({
                 </div>
 
                 {hint && <p className="cart-hint">{hint}</p>}
+                {submitError && <p className="cart-error">{submitError}</p>}
 
                 <div className="cart-row cart-header-row">
                     <span>Products Name</span>
@@ -106,7 +110,7 @@ function ShoppingCart({
                                     <button
                                         type="button"
                                         onClick={() => onIncrease(item.id)}
-                                        disabled={item.quantity >= item.stock}
+                                        disabled={item.quantity >= item.stock || submitting}
                                         aria-label="Increase quantity"
                                     >
                                         +
@@ -114,6 +118,7 @@ function ShoppingCart({
                                     <button
                                         type="button"
                                         onClick={() => onDecrease(item.id)}
+                                        disabled={submitting}
                                         aria-label="Decrease quantity"
                                     >
                                         -
@@ -121,6 +126,7 @@ function ShoppingCart({
                                     <button
                                         type="button"
                                         onClick={() => onRemove(item.id)}
+                                        disabled={submitting}
                                         aria-label="Remove item"
                                     >
                                         x
@@ -137,11 +143,16 @@ function ShoppingCart({
                 </div>
 
                 <div className="cart-footer">
-                    <button type="button" className="cart-clear-btn" onClick={onClear} disabled={isEmpty && !selectedEmployee && !employeeQuery}>
+                    <button
+                        type="button"
+                        className="cart-clear-btn"
+                        onClick={onClear}
+                        disabled={(isEmpty && !selectedEmployee && !employeeQuery) || submitting}
+                    >
                         Clear
                     </button>
                     <button type="button" className="cart-submit-btn" onClick={onSubmit} disabled={!canSubmit}>
-                        Submit
+                        {submitting ? 'Submitting...' : 'Submit'}
                     </button>
                 </div>
             </div>

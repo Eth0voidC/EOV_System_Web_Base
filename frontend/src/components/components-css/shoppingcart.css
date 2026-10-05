@@ -280,3 +280,9 @@
     font-size: 13px;
     color: #b3261d;
 }
+.cart-error {
+    color: #b3261d;
+    font-size: 13px;
+    margin: 8px 0 0;
+    text-align: center;
+}

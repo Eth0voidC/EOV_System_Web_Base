@@ -7,30 +7,10 @@ import CartIcon from '../../assets/shopping-cart-icon.png';
 
 import { getAllProducts } from '../../api/products';
 import { getAllEmployees } from '../../api/employees';
+import { createTransaction } from '../../api/transaction';
 
 import '../components-css/productcard.css';
 import '../components-css/shoppingcart.css';
-
-// Temporary sample data.
-// const sampleProducts = Array.from({ length: 14 }, (_, i) => ({
-//     id: i + 1,
-//     name: `Product ${i + 1}`,
-//     quantity: (i + 1) * 5,
-//     price: 50 + i * 12.5,
-//     image: '',
-// }));
-
-// Temporary sample employees. 
-// const sampleEmployees = [
-//     { id: 1, name: 'Maria Reyes', status: 'Active' },
-//     { id: 2, name: 'Mark Santos', status: 'Active' },
-//     { id: 3, name: 'Maricel Cruz', status: 'Restricted' },
-//     { id: 4, name: 'John Dela Cruz', status: 'Active' },
-//     { id: 5, name: 'Jane Garcia', status: 'Restricted' },
-//     { id: 6, name: 'Paolo Mendoza', status: 'Active' },
-//     { id: 7, name: 'Jay Labastida', status: 'Restricted' },
-//     { id: 8, name: 'John Eukie Revilla', status: 'Restricted' },
-// ];
 
 function ProductView() {
     const [products, setProducts] = useState([]);
@@ -45,12 +25,29 @@ function ProductView() {
     const [employeeQuery, setEmployeeQuery] = useState('');
     const [selectedEmployee, setSelectedEmployee] = useState(null);
 
+    const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState('');
+
+    const loadProducts = () => {
+        const token = localStorage.getItem('token');
+        return getAllProducts(token).then((data) => {
+            setProducts(
+                data.map((p) => ({
+                    id: p.product_item_id,
+                    name: p.product_name,
+                    quantity: p.stock_quantity,
+                    price: Number(p.price),
+                    image: p.image,
+                }))
+            );
+        });
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('token');
 
         Promise.all([getAllProducts(token), getAllEmployees(token)])
             .then(([productsData, employeesData]) => {
-                // Map backend shape -> what ProductCard/ShoppingCart expect
                 setProducts(
                     productsData.map((p) => ({
                         id: p.product_item_id,
@@ -136,20 +133,36 @@ function ProductView() {
     const handleClear = () => {
         setCartItems([]);
         resetEmployee();
+        setSubmitError('');
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!selectedEmployee || selectedEmployee.status !== 'Active' || cartItems.length === 0) {
             return;
         }
 
-        // NOT connected yet — employee_transaction/transaction_detail tables
-        // don't exist in the database yet. This still just logs for now.
-        console.log('Submitting order:', { employee: selectedEmployee, items: cartItems });
+        setSubmitting(true);
+        setSubmitError('');
 
-        setCartItems([]);
-        resetEmployee();
-        setIsCartOpen(false);
+        try {
+            const token = localStorage.getItem('token');
+            const items = cartItems.map((item) => ({
+                product_item_id: item.id,
+                quantity: item.quantity,
+            }));
+
+            await createTransaction(token, selectedEmployee.id, items);
+
+            await loadProducts(); // refresh stock numbers from the database
+
+            setCartItems([]);
+            resetEmployee();
+            setIsCartOpen(false);
+        } catch (err) {
+            setSubmitError(err.message);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     if (loading) return <p>Loading products...</p>;
@@ -185,7 +198,6 @@ function ProductView() {
                     </button>
                 </div>
 
-                {/* Empty transparent area (buttons can go here later) */}
                 <div className="product-topbar-right"></div>
             </div>
 
@@ -222,6 +234,8 @@ function ProductView() {
                     onRemove={handleRemove}
                     onClear={handleClear}
                     onSubmit={handleSubmit}
+                    submitting={submitting}
+                    submitError={submitError}
                 />
             )}
         </div>
