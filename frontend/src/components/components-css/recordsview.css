@@ -417,6 +417,42 @@
     background: #5fdc57;
 }
 
+/* ---------- Out of stock ---------- */
+.product-image-wrapper {
+    position: relative; /* anchors the overlay */
+}
+
+.product-card-disabled {
+    cursor: not-allowed;
+}
+
+.product-card-disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.product-card-disabled .product-image {
+    filter: grayscale(40%) opacity(0.5);
+}
+
+.out-of-stock-overlay {
+    position: absolute;
+    inset: 8px 8px 0; /* matches the image-wrapper's own padding */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* lets clicks pass through, though card is already blocked */
+}
+
+.out-of-stock-overlay span {
+    color: #d93025;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1100px) {
     .records-layout {

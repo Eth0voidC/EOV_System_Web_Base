@@ -16,6 +16,16 @@ import InventoryView from './components/components-staff/InventoryView';
 import ProductView from './components/components-staff/ProductView';
 import DeliveryView from './components/components-staff/DeliveryView';
 
+//Import Admin Views
+import DashboardOverviewAdmin from './components/components-admin/DashboardOverviewAdmin';
+import InventoryViewAdmin from './components/components-admin/InventoryViewAdmin';
+import DeliveryHistory from './components/components-admin/DeliveryHistory';
+import TransactionHistory from './components/components-admin/TransactionHistory';
+import DeductionProcessing from './components/components-admin/DeductionProcessing';
+import Logs from './components/components-admin/Logs';
+import RegisterCustomer from './components/components-admin/RegisterCustomer';
+import CreateAccount from './components/components-admin/CreateAccount';
+
 function App() {
   return (
     <Router>
@@ -23,6 +33,7 @@ function App() {
         {/* The default route ("/") loads the Login page */}
         <Route path="/" element={<Login />} />
 
+        {/* AdminDashboard is the layout; children render inside its <Outlet /> */}
         <Route
           path="/admin"
           element={
@@ -30,7 +41,18 @@ function App() {
               <AdminDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<DashboardOverviewAdmin />} />
+          <Route path="dashboard" element={<DashboardOverviewAdmin />} />
+          <Route path="inventory" element={<InventoryViewAdmin />} />
+          <Route path="reports/delivery-history" element={<DeliveryHistory />} />
+          <Route path="reports/transaction-history" element={<TransactionHistory />} />
+          <Route path="reports/deduction-processing" element={<DeductionProcessing />} />
+          <Route path="reports/logs" element={<Logs />} />
+          <Route path="customer/register" element={<RegisterCustomer />} />
+          <Route path="customer/create-account" element={<CreateAccount />} />
+          <Route path="*" element={<p>Page not found</p>} />
+        </Route>
 
         {/* StaffDashboard is the layout; children render inside its <Outlet /> */}
         <Route

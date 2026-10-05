@@ -3,13 +3,24 @@ import '../components-css/productcard.css';
 const CURRENCY = '$'; // change to your currency symbol
 
 function ProductCard({ name, quantity, price, image, onClick }) {
+    const outOfStock = quantity <= 0;
+
     return (
-        <div className="product-card" onClick={onClick}>
+        <div
+            className={`product-card${outOfStock ? ' product-card-disabled' : ''}`}
+            onClick={outOfStock ? undefined : onClick}
+        >
             <div className="product-image-wrapper">
                 {image ? (
                     <img src={image} alt={name} className="product-image" />
                 ) : (
                     <div className="product-image-placeholder" />
+                )}
+
+                {outOfStock && (
+                    <div className="out-of-stock-overlay">
+                        <span>OUT OF STOCK</span>
+                    </div>
                 )}
             </div>
 
