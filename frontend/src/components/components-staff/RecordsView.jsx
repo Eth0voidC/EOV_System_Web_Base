@@ -222,7 +222,7 @@ function RecordsView() {
                             >
                                 <option value="">All</option>
                                 <option value="Pending">Pending</option>
-                                <option value="Paid">Paid</option>
+                                <option value="Deducted">Deducted</option>
                             </select>
                         </div>
 

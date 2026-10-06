@@ -18,3 +18,17 @@ export const createTransaction = async (token, employeeId, items) => {
 
   return data;
 };
+
+export const getTodayTransactions = async (token) => {
+  const res = await fetch(`${API_URL}/today`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Failed to load today's transactions");
+  }
+
+  return data;
+};

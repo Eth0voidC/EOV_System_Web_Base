@@ -1,31 +1,13 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import { getTodayTransactions } from '../../api/transaction';
+import { getAllProducts } from '../../api/products';
 import { formatMoney } from './recordsHelpers';
 import '../components-css/dashboardoverview.css';
 
-// Temporary sample data. Later this comes from the API.
-const todayTransactions = [
-    { id: 1, time: '08:15 AM', employee: 'Maria Reyes', items: 3, total: 225, status: 'Paid' },
-    { id: 2, time: '08:42 AM', employee: 'Mark Santos', items: 1, total: 125, status: 'Pending' },
-    { id: 3, time: '09:05 AM', employee: 'John Dela Cruz', items: 4, total: 410, status: 'Pending' },
-    { id: 4, time: '09:30 AM', employee: 'Paolo Mendoza', items: 2, total: 187.5, status: 'Paid' },
-    { id: 5, time: '10:10 AM', employee: 'Maria Reyes', items: 1, total: 62.5, status: 'Pending' },
-    { id: 6, time: '10:45 AM', employee: 'Mark Santos', items: 5, total: 530, status: 'Paid' },
-    { id: 7, time: '11:20 AM', employee: 'John Dela Cruz', items: 2, total: 150, status: 'Pending' },
-];
+const LOW_STOCK_LIMIT = 20;
 
-const sampleProducts = [
-    { id: 1, name: 'Product 1', stock: 0, image: '' },
-    { id: 2, name: 'Product 2', stock: 3, image: '' },
-    { id: 3, name: 'Product 3', stock: 8, image: '' },
-    { id: 4, name: 'Product 4', stock: 15, image: '' },
-    { id: 5, name: 'Product 5', stock: 18, image: '' },
-    { id: 6, name: 'Product 6', stock: 60, image: '' }, // not low, so it is hidden
-];
-
-const LOW_STOCK_LIMIT = 20; // products at or below this show in the list
-
-// Pill color and text for each stock level
 const getStockLevel = (stock) => {
     if (stock === 0) return { level: 'red', label: 'Out of stock' };
     if (stock <= 5) return { level: 'red', label: `${stock} left` };
@@ -33,36 +15,65 @@ const getStockLevel = (stock) => {
     return { level: 'green', label: `${stock} left` };
 };
 
-function DashboardOverview() {
-    const totalSales = todayTransactions.reduce((sum, t) => sum + t.total, 0);
-    const pendingCount = todayTransactions.filter((t) => t.status === 'Pending').length;
+const formatTime = (iso) =>
+    new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
 
-    // Lowest stock first
-    const lowStock = sampleProducts
+function DashboardOverview() {
+    const [transactions, setTransactions] = useState([]);
+    const [inventory, setInventory] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        Promise.all([getTodayTransactions(token), getAllProducts(token)])
+            .then(([txnData, productsData]) => {
+                setTransactions(txnData);
+                setInventory(
+                    productsData.map((p) => ({
+                        id: p.product_item_id,
+                        name: p.product_name,
+                        price: Number(p.price),
+                        stock: p.stock_quantity,
+                        image: p.image,
+                    }))
+                );
+            })
+            .catch((err) => setError(err.message))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const transactionCount = transactions.length; // already one-per-employee-per-day at the DB level
+
+    const totalInventoryValue = inventory.reduce((sum, p) => sum + p.price * p.stock, 0);
+
+    const lowStock = inventory
         .filter((p) => p.stock <= LOW_STOCK_LIMIT)
         .sort((a, b) => a.stock - b.stock);
+
+    if (loading) return <p className="dash-empty">Loading dashboard...</p>;
+    if (error) return <p className="dash-empty">Error: {error}</p>;
 
     return (
         <div className="dash-page">
             <h2 className="dash-title">Dashboard</h2>
 
             <div className="dash-layout">
-                {/* ---------- Today's Transaction ---------- */}
                 <section className="dash-panel">
                     <h3 className="dash-panel-title">Today's Transaction</h3>
 
                     <div className="dash-summary">
                         <div className="dash-stat">
-                            <span className="dash-stat-label">Transactions</span>
-                            <span className="dash-stat-value">{todayTransactions.length}</span>
+                            <span className="dash-stat-label">Transaction</span>
+                            <span className="dash-stat-value">{transactionCount}</span>
                         </div>
+
+                        <div className="dash-summary-divider" />
+
                         <div className="dash-stat">
-                            <span className="dash-stat-label">Total Sales</span>
-                            <span className="dash-stat-value">{formatMoney(totalSales)}</span>
-                        </div>
-                        <div className="dash-stat">
-                            <span className="dash-stat-label">Pending</span>
-                            <span className="dash-stat-value">{pendingCount}</span>
+                            <span className="dash-stat-label">Total Inventory Value</span>
+                            <span className="dash-stat-value">{formatMoney(totalInventoryValue)}</span>
                         </div>
                     </div>
 
@@ -72,24 +83,18 @@ function DashboardOverview() {
                             <span>Employee</span>
                             <span>Items</span>
                             <span>Total</span>
-                            <span>Status</span>
                         </div>
 
                         <div className="dash-list">
-                            {todayTransactions.length === 0 ? (
+                            {transactions.length === 0 ? (
                                 <p className="dash-empty">No transactions today.</p>
                             ) : (
-                                todayTransactions.map((t) => (
+                                transactions.map((t) => (
                                     <div className="dash-row dash-cols dash-item" key={t.id}>
-                                        <span>{t.time}</span>
+                                        <span>{formatTime(t.time)}</span>
                                         <span className="dash-ellipsis">{t.employee}</span>
                                         <span>{t.items}</span>
                                         <span>{formatMoney(t.total)}</span>
-                                        <span>
-                                            <span className={`dash-badge dash-${t.status.toLowerCase()}`}>
-                                                {t.status}
-                                            </span>
-                                        </span>
                                     </div>
                                 ))
                             )}
@@ -97,7 +102,6 @@ function DashboardOverview() {
                     </div>
                 </section>
 
-                {/* ---------- Low Stock Inventory ---------- */}
                 <section className="dash-panel">
                     <div className="dash-panel-head">
                         <h3 className="dash-panel-title">Low Stock Inventory</h3>

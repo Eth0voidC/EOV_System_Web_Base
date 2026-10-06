@@ -1,5 +1,9 @@
 .dash-page {
     padding: 10px 0 20px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden; /* stops any stray overflow from scrolling the whole page */
+    box-sizing: border-box;
 }
 
 .dash-title {
@@ -13,6 +17,7 @@
     display: grid;
     grid-template-columns: 1.2fr 1fr;
     gap: 16px;
+    width: 100%;
 }
 
 /* ---------- Panels ---------- */
@@ -25,6 +30,10 @@
     height: calc(100vh - 200px);
     min-height: 440px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0; /* allows the grid track to shrink below content size */
 }
 
 .dash-panel-head {
@@ -58,11 +67,10 @@
     color: #777;
 }
 
-/* ---------- Left: summary (teal block) ---------- */
+/* ---------- Summary: Transaction | Total Inventory Value ---------- */
 .dash-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    display: flex;
+    align-items: center;
     padding: 18px 16px;
     margin-bottom: 10px;
     background: #a8ece1;
@@ -70,9 +78,20 @@
 }
 
 .dash-stat {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 6px;
+    text-align: center;
+    min-width: 0;
+}
+
+.dash-summary-divider {
+    width: 1px;
+    align-self: stretch;
+    background: #5b9b90;
+    margin: 0 20px;
 }
 
 .dash-stat-label {
@@ -87,7 +106,7 @@
     color: #000;
 }
 
-/* ---------- Left: table (gray header + light cyan body) ---------- */
+/* ---------- Table (gray header + light cyan body) ---------- */
 .dash-table-box {
     flex: 1;
     min-height: 0;
@@ -102,10 +121,11 @@
     display: grid;
     align-items: center;
     gap: 8px;
+    min-width: 0;
 }
 
 .dash-cols {
-    grid-template-columns: 0.9fr 1.5fr 0.6fr 1fr 1fr;
+    grid-template-columns: 0.9fr 1.6fr 0.7fr 1fr;
 }
 
 .dash-head {
@@ -132,27 +152,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-width: 0;
 }
 
-.dash-badge {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.dash-paid {
-    background: #d6f1d3;
-    color: #1f6b1a;
-}
-
-.dash-pending {
-    background: #fff3d6;
-    color: #9a6700;
-}
-
-/* ---------- Right: low stock list ---------- */
+/* ---------- Low stock list ---------- */
 .dash-low-list {
     flex: 1;
     min-height: 0;
@@ -169,6 +172,7 @@
     padding: 10px 12px;
     background: #e1edd6;
     border-radius: 10px;
+    min-width: 0;
 }
 
 .dash-thumb {
@@ -180,7 +184,6 @@
     object-fit: cover;
 }
 
-/* Sky-and-grass look when a product has no image yet */
 .dash-thumb-placeholder {
     background: linear-gradient(to bottom, #c4e6fb 0%, #eaf6fd 60%, #b5d56a 60%, #8aa50f 100%);
 }
@@ -196,20 +199,21 @@
 }
 
 .dash-pill {
-    min-width: 120px;
-    padding: 14px 16px;
+    min-width: 90px;
+    padding: 10px 12px;
     border-radius: 24px;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     color: #1a1a1a;
+    flex-shrink: 0;
 }
 
 .dash-pill-green  { background: #7fe56f; }
 .dash-pill-red    { background: #e87272; }
 .dash-pill-yellow { background: #e2e46b; }
 
-/* ---------- Responsive ---------- */
+/* ---------- Responsive: tablet and below ---------- */
 @media (max-width: 1000px) {
     .dash-layout {
         grid-template-columns: 1fr;
@@ -219,6 +223,70 @@
         min-height: 360px;
     }
     .dash-summary {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        gap: 14px;
+    }
+    .dash-summary-divider {
+        width: 100%;
+        height: 1px;
+        margin: 0;
+    }
+}
+
+/* ---------- Responsive: phone ---------- */
+@media (max-width: 480px) {
+    .dash-page {
+        padding: 10px 0 16px;
+    }
+    .dash-title {
+        font-size: 20px;
+    }
+    .dash-panel {
+        padding: 10px 10px 12px;
+        border-radius: 12px;
+    }
+    .dash-panel-title {
+        font-size: 20px;
+        margin-left: 6px;
+    }
+    .dash-summary {
+        padding: 14px 12px;
+    }
+    .dash-stat-label {
+        font-size: 12px;
+    }
+    .dash-stat-value {
+        font-size: 20px;
+    }
+    .dash-cols {
+        grid-template-columns: 0.8fr 1.4fr 0.5fr 0.8fr;
+        gap: 4px;
+    }
+    .dash-head {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+    .dash-list {
+        padding: 0 8px;
+    }
+    .dash-item {
+        font-size: 12px;
+    }
+    .dash-low-item {
+        gap: 10px;
+        padding: 8px 10px;
+    }
+    .dash-thumb {
+        width: 52px;
+        height: 52px;
+        border-radius: 10px;
+    }
+    .dash-low-name {
+        font-size: 14px;
+    }
+    .dash-pill {
+        min-width: 70px;
+        padding: 8px 10px;
+        font-size: 12px;
     }
 }

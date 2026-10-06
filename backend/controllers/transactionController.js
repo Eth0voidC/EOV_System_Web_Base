@@ -135,4 +135,37 @@ const createTransaction = async (req, res) => {
   }
 };
 
-module.exports = { createTransaction };
+
+
+const getTodayTransactions = async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT et.employee_transaction_id,
+              et.created_at,
+              e.last_name, e.first_name,
+              COUNT(td.transaction_detail_id)::int AS items,
+              COALESCE(SUM(td.total_amount), 0) AS total
+       FROM employee_transaction et
+       JOIN employee e ON et.employee_id = e.employee_id
+       LEFT JOIN transaction_detail td ON td.employee_transaction_id = et.employee_transaction_id
+       WHERE et.transaction_date = CURRENT_DATE
+       GROUP BY et.employee_transaction_id, et.created_at, e.last_name, e.first_name
+       ORDER BY et.created_at DESC`
+    );
+
+    res.status(200).json(
+      result.rows.map((r) => ({
+        id: r.employee_transaction_id,
+        time: r.created_at,
+        employee: `${r.first_name} ${r.last_name}`,
+        items: r.items,
+        total: Number(r.total),
+      }))
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = { createTransaction, getTodayTransactions };
