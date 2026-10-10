@@ -27,7 +27,7 @@ function ProductCard({ name, quantity, price, image, onClick }) {
             <div className="product-info">
                 <p>Name: {name}</p>
                 <p>Quantity: {quantity}</p>
-                <p>Price: {CURRENCY}{Number(price).toFixed(2)}</p>
+                <p>Price: {CURRENCY}{Number(price).toFixed(0)}</p>
             </div>
         </div>
     );

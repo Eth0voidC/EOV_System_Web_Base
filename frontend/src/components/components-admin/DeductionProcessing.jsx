@@ -146,7 +146,7 @@ function DeductionProcessing() {
                                         {d.period}
                                     </div>
                                     <div className="deduction-cell" data-label="Total Amount">
-                                        ₱{d.total.toFixed(2)}
+                                        ₱{d.total.toFixed(0)}
                                     </div>
                                     <div className="deduction-cell" data-label="Status">
                                         <span className={`deduction-badge deduction-status-${d.status.toLowerCase()}`}>
@@ -227,14 +227,14 @@ function DeductionProcessing() {
                                 {selectedDeduction.details.map((detail, index) => (
                                     <div className="deduction-breakdown-row" key={index}>
                                         <span>{detail.date}</span>
-                                        <span>₱{detail.amount.toFixed(2)}</span>
+                                        <span>₱{detail.amount.toFixed(0)}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
                         
                         <p className="deduction-breakdown-total">
-                            Total Deducted: ₱{selectedDeduction.total.toFixed(2)}
+                            Total Deducted: ₱{selectedDeduction.total.toFixed(0)}
                         </p>
                         
                         <button 

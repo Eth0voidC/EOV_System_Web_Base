@@ -2,8 +2,8 @@ const CURRENCY = '₱'; // Updated to ₱ to match your Philippine Peso formatti
 
 export const formatMoney = (value) =>
     `${CURRENCY}${Number(value).toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
     })}`;
 
 // Dates are stored as 'YYYY-MM-DD'

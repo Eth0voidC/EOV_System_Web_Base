@@ -293,8 +293,8 @@ function DeliveryHistory() {
                                             {Number(item.total || 0).toLocaleString(
                                                 'en-PH',
                                                 {
-                                                    minimumFractionDigits: 2,
-                                                    maximumFractionDigits: 2,
+                                                    minimumFractionDigits: 0,
+                                                    maximumFractionDigits: 0,
                                                 }
                                             )}
                                         </span>
@@ -309,8 +309,8 @@ function DeliveryHistory() {
                                 {Number(selectedDelivery.totalValue || 0).toLocaleString(
                                     'en-PH',
                                     {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2,
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0,
                                     }
                                 )}
                             </p>

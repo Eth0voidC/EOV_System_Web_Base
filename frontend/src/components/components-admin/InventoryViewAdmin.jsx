@@ -673,7 +673,7 @@ function InventoryViewAdmin() {
                                                     onChange={(e) => handleDraftChange('price', e.target.value)}
                                                 />
                                             ) : (
-                                                `₱${Number(p.price).toFixed(2)}`
+                                                `₱${Number(p.price).toFixed(0)}`
                                             )}
                                         </div>
 
@@ -691,7 +691,7 @@ function InventoryViewAdmin() {
                                         </div>
 
                                         <div className="inv-cell" data-label="Total">
-                                            ₱{totalPrice.toFixed(2)}
+                                            ₱{totalPrice.toFixed(0)}
                                         </div>
                                         
                                         <div className="inv-cell inv-cell-status" data-label="Status">
