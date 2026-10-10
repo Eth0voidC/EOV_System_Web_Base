@@ -11,6 +11,7 @@ const { pool } = require('../config/db');
 //   - increases the employee's running balance by the total
 const createTransaction = async (req, res) => {
   const { employee_id, items } = req.body;
+  const userId = req.user.id;
 
   if (!employee_id || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'employee_id and at least one item are required' });
@@ -105,9 +106,10 @@ const createTransaction = async (req, res) => {
       transactionTotal += totalAmount;
 
       await client.query(
-        `INSERT INTO transaction_detail (employee_transaction_id, product_item_id, quantity, unit_price, total_amount)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [transactionId, item.product_item_id, item.quantity, unitPrice, totalAmount]
+        `INSERT INTO transaction_detail
+        (employee_transaction_id, product_item_id, quantity, unit_price, total_amount, user_id)
+        VALUES ($1, $2, $3, $4, $5, $6)`,
+        [transactionId, item.product_item_id, item.quantity, unitPrice, totalAmount, userId]
       );
 
       await client.query(

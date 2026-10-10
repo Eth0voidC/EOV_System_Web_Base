@@ -6,6 +6,13 @@ import '../components-css/recordsview.css';
 /* ---------- Transaction Breakdown ---------- */
 export function TransactionBreakdown({ transaction, employeeName, onClose }) {
     const total = transaction.items.reduce((sum, i) => sum + i.qty * i.price, 0);
+    const processedBy = [
+        ...new Set(
+            transaction.items
+                .map(item => item.processedBy)
+                .filter(Boolean)
+        )
+    ].join(', ') || 'Unknown';
 
     const handlePrint = () => {
         const rows = transaction.items
@@ -28,7 +35,9 @@ export function TransactionBreakdown({ transaction, employeeName, onClose }) {
                 <tr><th>Product Name</th><th>Qty</th><th class="r">Total</th></tr>
                 ${rows}
              </table>
-             <p class="total">Total: ${formatMoney(total)}</p>`
+             <p class="total">Total: ${formatMoney(total)}</p>
+             <p><strong>Processed By:</strong> ${escapeHtml(processedBy)}</p>`
+
         );
     };
 
@@ -62,9 +71,8 @@ export function TransactionBreakdown({ transaction, employeeName, onClose }) {
                         ))}
                     </div>
                 </div>
-
                 <p className="rec-breakdown-total">Total: {formatMoney(total)}</p>
-
+                <p className="rec-breakdown-line">Processed By: {processedBy}</p>
                 <button type="button" className="rec-print-btn" onClick={handlePrint}>
                     Print Receipt
                 </button>

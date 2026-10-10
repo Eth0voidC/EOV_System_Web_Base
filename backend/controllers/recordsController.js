@@ -23,12 +23,30 @@ const getEmployeeRecords = async (req, res) => {
       SELECT et.employee_transaction_id AS id,
              to_char(et.transaction_date, 'YYYY-MM-DD') AS date,
              'Pending' AS status,
-             COALESCE((
-               SELECT json_agg(json_build_object('name', p.product_name, 'qty', td.quantity, 'price', td.unit_price::float8) ORDER BY p.product_name)
-               FROM transaction_detail td
-               JOIN product_item p ON p.product_item_id = td.product_item_id
-               WHERE td.employee_transaction_id = et.employee_transaction_id
-             ), '[]'::json) AS items
+              COALESCE((
+                SELECT json_agg(
+                  json_build_object(
+                    'name', p.product_name,
+                    'qty', td.quantity,
+                    'price', td.unit_price::float8,
+                    'processedBy', NULLIF(
+                      CONCAT_WS(' ',
+                        NULLIF(u.first_name, ''),
+                        NULLIF(u.middle_initial, ''),
+                        NULLIF(u.last_name, '')
+                      ),
+                      ''
+                    )
+                  )
+                  ORDER BY p.product_name
+                )
+                FROM transaction_detail td
+                JOIN product_item p
+                  ON p.product_item_id = td.product_item_id
+                LEFT JOIN "User" u
+                  ON u.user_id = td.user_id
+                WHERE td.employee_transaction_id = et.employee_transaction_id
+              ), '[]'::json) AS items
       FROM employee_transaction et
       WHERE et.employee_id = $1
 
@@ -38,12 +56,30 @@ const getEmployeeRecords = async (req, res) => {
       SELECT eta.employee_transaction_archive_id AS id,
              to_char(eta.transaction_date, 'YYYY-MM-DD') AS date,
              'Deducted' AS status,
-             COALESCE((
-               SELECT json_agg(json_build_object('name', p.product_name, 'qty', tda.quantity, 'price', tda.unit_price::float8) ORDER BY p.product_name)
-               FROM transaction_detail_archive tda
-               JOIN product_item p ON p.product_item_id = tda.product_item_id
-               WHERE tda.employee_transaction_archive_id = eta.employee_transaction_archive_id
-             ), '[]'::json) AS items
+            COALESCE((
+              SELECT json_agg(
+                json_build_object(
+                  'name', p.product_name,
+                  'qty', tda.quantity,
+                  'price', tda.unit_price::float8,
+                  'processedBy', NULLIF(
+                    CONCAT_WS(' ',
+                      NULLIF(u.first_name, ''),
+                      NULLIF(u.middle_initial, ''),
+                      NULLIF(u.last_name, '')
+                    ),
+                    ''
+                  )
+                )
+                ORDER BY p.product_name
+              )
+              FROM transaction_detail_archive tda
+              JOIN product_item p
+                ON p.product_item_id = tda.product_item_id
+              LEFT JOIN "User" u
+                ON u.user_id = tda.user_id
+              WHERE tda.employee_transaction_archive_id = eta.employee_transaction_archive_id
+            ), '[]'::json) AS items
       FROM employee_transaction_archive eta
       WHERE eta.employee_id = $1
       

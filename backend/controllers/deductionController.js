@@ -112,13 +112,29 @@ const processDeductions = async (req, res) => {
                     VALUES ($1, $2, $3)
                     RETURNING employee_transaction_archive_id
                 `, [deductionId, employeeId, txn.transaction_date]);
-                
+
                 await client.query(`
-                    INSERT INTO transaction_detail_archive (employee_transaction_archive_id, product_item_id, quantity, unit_price, total_amount)
-                    SELECT $1, product_item_id, quantity, unit_price, total_amount
+                    INSERT INTO transaction_detail_archive (
+                        employee_transaction_archive_id,
+                        product_item_id,
+                        quantity,
+                        unit_price,
+                        total_amount,
+                        user_id
+                    )
+                    SELECT
+                        $1,
+                        product_item_id,
+                        quantity,
+                        unit_price,
+                        total_amount,
+                        user_id
                     FROM transaction_detail
                     WHERE employee_transaction_id = $2
-                `, [archiveHeader.rows[0].employee_transaction_archive_id, txn.employee_transaction_id]);
+                `, [
+                    archiveHeader.rows[0].employee_transaction_archive_id,
+                    txn.employee_transaction_id
+                ]);
                 
                 // 4. Delete the active rows
                 await client.query(`DELETE FROM transaction_detail WHERE employee_transaction_id = $1`, [txn.employee_transaction_id]);
