@@ -15,8 +15,8 @@ import '../components-css/dashboardoverviewadmin.css';
 
 const formatCurrency = (amount) =>
   `₱ ${Number(amount || 0).toLocaleString('en-PH', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   })}`;
 
 const getTodayDate = () => {
