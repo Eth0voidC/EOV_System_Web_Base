@@ -1,6 +1,6 @@
 import '../components-css/productcard.css';
 
-const CURRENCY = '$'; // change to your currency symbol
+const CURRENCY = '₱'; // change to your currency symbol
 
 function ProductCard({ name, quantity, price, image, onClick }) {
     const outOfStock = quantity <= 0;

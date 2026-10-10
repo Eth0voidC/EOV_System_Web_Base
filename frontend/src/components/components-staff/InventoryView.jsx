@@ -5,7 +5,7 @@ import { getActiveProducts } from '../../api/products';
 
 import '../components-css/inventoryview.css';
 
-const CURRENCY = '$'; // change to your currency symbol
+const CURRENCY = '₱'; // change to your currency symbol
 
 const formatMoney = (value) =>
     `${CURRENCY}${value.toLocaleString(undefined, {
