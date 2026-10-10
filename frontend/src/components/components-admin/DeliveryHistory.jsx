@@ -3,6 +3,7 @@ import Closebutton from '../../assets/close-button-icon.png';
 import DeliveryTruckIcon from '../../assets/delivery-icon.png';
 import '../components-css/deliveryhistory.css';
 import { printDeliveryReceipt } from '../components-staff/recordsHelpers.js';
+import API_BASE_URL from '../../api/api.js';
 
 const API_URL = `${API_BASE_URL}/api/deliveries`;
 
