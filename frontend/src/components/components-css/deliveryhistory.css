@@ -1,0 +1,277 @@
+/* frontend/src/components/components-css/deliveryhistory.css */
+
+.dh-page {
+    /* Added horizontal padding so cards don't touch the edges */
+    padding: 10px 20px 30px; 
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Lock the height to the viewport to prevent the whole page from scrolling */
+    height: calc(100vh - 40px); 
+    overflow: hidden; 
+
+    /* 1. CONTAINER QUERY SETUP: Reacts to component width, not window width */
+    container-type: inline-size;
+    container-name: dh;
+}
+
+/* ---------- Top Filters ---------- */
+.dh-controls-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Allows safe wrapping */
+    gap: 20px;
+    margin-bottom: 24px;
+    margin-top: 10px;
+    flex-shrink: 0; /* Ensures the controls never get squished */
+    width: 100%;
+}
+
+.dh-filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.dh-filter-pill {
+    display: flex;
+    align-items: center;
+    background-color: #46c068;
+    border: 1.5px solid #11261a;
+    border-radius: 20px;
+    padding: 4px 16px;
+    height: 42px;
+    box-sizing: border-box;
+}
+
+.dh-filter-pill label {
+    color: #ffffff;
+    font-weight: bold;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    margin-right: 12px;
+    white-space: nowrap;
+}
+
+.dh-filter-pill input {
+    width: 100px;
+    height: 28px;
+    border: none;
+    padding: 0 8px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+    background-color: #ebebeb;
+}
+
+.dh-generate-btn {
+    background-color: #72ef6a;
+    border: 1.5px solid #11261a;
+    border-radius: 8px;
+    padding: 0 24px;
+    height: 42px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    color: #000000;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dh-generate-btn:hover {
+    background-color: #5fdc57;
+}
+
+
+/* ---------- Grid and Cards ---------- */
+.dh-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+    box-sizing: border-box;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px;
+}
+
+.dh-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dh-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dh-grid::-webkit-scrollbar-thumb {
+    background: #8a8a8a;
+    border-radius: 10px;
+}
+
+.dh-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 230px;
+    min-height: 230px;
+    box-sizing: border-box;
+}
+
+.dh-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.dh-card-header {
+    background-color: #46c068;
+    color: #ffffff;
+    text-align: center;
+    padding: 12px 8px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+
+.dh-card-body {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    flex: 1;
+    min-height: 0;
+    box-sizing: border-box;
+}
+
+.dh-truck-img {
+    height: 64px;
+    width: 64px;
+    max-width: 100%;
+    object-fit: contain;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.dh-card-date {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+    text-align: center;
+}
+
+/* ---------- Modal Overrides ---------- */
+/* Fine-tuning the reused deduction modal layout specifically for Delivery History */
+.dh-modal-override {
+    max-width: 500px;
+}
+
+.dh-modal-cols {
+    grid-template-columns: 2fr 1fr 1fr !important; /* Forces the 3 columns for Name, Qty, Total */
+}
+
+.dh-text-center {
+    text-align: center;
+}
+
+.dh-text-right {
+    text-align: right;
+}
+
+.dh-modal-footer-info {
+    margin: 16px 0 24px;
+    font-family: 'Times New Roman', serif;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.dh-modal-footer-info p {
+    margin: 4px 0;
+}
+
+.dh-filter-pill select {
+    width: 120px;
+    height: 30px;
+    min-width: 0;
+    padding: 0 6px;
+    border: none;
+    outline: none;
+    border-radius: 0;
+    background-color: #ebebeb;
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding:5px 8px;
+    border-radius: 4px;
+}
+
+/* 4. CONTAINER QUERIES: Reacts accurately to the panel shrinking in split-screen */
+@container dh (max-width: 600px) {
+    .dh-controls-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .dh-filter-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .dh-filter-pill {
+        justify-content: space-between;
+    }
+    
+    .dh-filter-pill input {
+        flex: 1;
+        margin-left: 12px;
+    }
+
+    .dh-generate-btn {
+        width: 100%;
+    }
+
+        .dh-filter-pill {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dh-filter-pill select {
+        flex: 1;
+        width: auto;
+        max-width: 180px;
+    }
+}
+
+
+@media (max-width: 900px) {
+    .dh-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .dh-grid {
+        grid-template-columns: 1fr;
+    }
+}

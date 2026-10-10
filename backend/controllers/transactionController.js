@@ -59,7 +59,7 @@ const createTransaction = async (req, res) => {
     let transactionId;
     const existingTxn = await client.query(
       `SELECT employee_transaction_id FROM employee_transaction
-       WHERE employee_id = $1 AND transaction_date = CURRENT_DATE`,
+      WHERE employee_id = $1 AND transaction_date = (NOW() AT TIME ZONE 'Asia/Manila')::date`,
       [employee_id]
     );
 
@@ -67,7 +67,9 @@ const createTransaction = async (req, res) => {
       transactionId = existingTxn.rows[0].employee_transaction_id;
     } else {
       const newTxn = await client.query(
-        `INSERT INTO employee_transaction (employee_id) VALUES ($1) RETURNING employee_transaction_id`,
+        `INSERT INTO employee_transaction (employee_id, transaction_date) 
+        VALUES ($1, (NOW() AT TIME ZONE 'Asia/Manila')::date) 
+        RETURNING employee_transaction_id`,
         [employee_id]
       );
       transactionId = newTxn.rows[0].employee_transaction_id;
@@ -77,8 +79,12 @@ const createTransaction = async (req, res) => {
 
     for (const item of items) {
       const productResult = await client.query(
-        `SELECT product_item_id, product_name, price, stock_quantity
-         FROM product_item WHERE product_item_id = $1 FOR UPDATE`,
+        `SELECT pi.product_item_id, pi.product_name, pi.price, pi.stock_quantity,
+         ps.name AS status
+         FROM product_item pi
+         JOIN product_status ps ON pi.product_status_id = ps.id
+         WHERE pi.product_item_id = $1
+         FOR UPDATE OF pi`,
         [item.product_item_id]
       );
 
@@ -89,11 +95,9 @@ const createTransaction = async (req, res) => {
 
       const product = productResult.rows[0];
 
-      if (product.stock_quantity < item.quantity) {
+        if (product.status !== 'Active') {
         await client.query('ROLLBACK');
-        return res.status(400).json({
-          error: `Not enough stock for ${product.product_name}. Available: ${product.stock_quantity}, requested: ${item.quantity}`,
-        });
+        return res.status(400).json({ error: `${product.product_name} is no longer available` });
       }
 
       const unitPrice = Number(product.price);
@@ -148,7 +152,7 @@ const getTodayTransactions = async (req, res) => {
        FROM employee_transaction et
        JOIN employee e ON et.employee_id = e.employee_id
        LEFT JOIN transaction_detail td ON td.employee_transaction_id = et.employee_transaction_id
-       WHERE et.transaction_date = CURRENT_DATE
+       WHERE et.transaction_date = (NOW() AT TIME ZONE 'Asia/Manila')::date
        GROUP BY et.employee_transaction_id, et.created_at, e.last_name, e.first_name
        ORDER BY et.created_at DESC`
     );

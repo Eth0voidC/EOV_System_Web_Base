@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import SearchIcon from '../../assets/search-icon.png';
-import { getAllProducts } from '../../api/products';
+import { getActiveProducts } from '../../api/products';
 import { createDelivery } from '../../api/delivery';
 
 import '../components-css/deliveryview.css';
@@ -34,7 +34,7 @@ function DeliveryView() {
         const token = localStorage.getItem('token');
         setLoadingProducts(true);
 
-        getAllProducts(token)
+        getActiveProducts()
             .then((data) => {
                 setProducts(
                     data.map((p) => ({

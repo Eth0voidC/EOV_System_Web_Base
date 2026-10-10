@@ -1,0 +1,178 @@
+/* frontend/src/components/components-css/transactionhistory.css */
+
+.th-page {
+    padding: 10px 0 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.th-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 120px);
+}
+
+/* Green header spanning full width with flex layout for the search bar */
+.th-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 72px;
+    margin: 0;
+    padding: 16px 24px;
+    background: #46c068;
+    color: #ffffff;
+}
+
+.th-title {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Search area inside the green header */
+.th-search-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.th-search-label {
+    font-style: italic;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    color: #11261a;
+}
+
+.th-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 6px;
+    width: 280px;
+    border: 1px solid #11261a;
+}
+
+/* Positions the icon inside the left side of the input */
+.th-input-search-icon {
+    position: absolute;
+    left: 10px;
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+.th-search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    /* 2. INCREASE LEFT PADDING TO 34px */
+    padding: 8px 12px 8px 34px; 
+    font-size: 14px;
+    background: transparent;
+    border-radius: 6px 0 0 6px; 
+}
+
+
+.th-search-icon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    object-fit: contain;
+}
+
+/* Suggestions dropdown matching existing styles */
+.th-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    background: #ffffff;
+    border: 1.5px solid #000;
+    border-radius: 8px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    overflow: hidden;
+    color: #000000;
+}
+
+.th-suggestions li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.th-suggestions li:hover {
+    background: #e1edd6;
+}
+
+.th-no-match {
+    color: #777;
+    cursor: default;
+}
+
+.th-no-match:hover {
+    background: #ffffff;
+}
+
+/* Body and Table adjustments */
+.th-card-body {
+    flex: 1;
+    padding: 24px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.th-head-row {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000000;
+    border-bottom: 1px solid #777;
+    padding-bottom: 12px;
+    text-transform: uppercase;
+}
+
+.th-list {
+    margin-top: 12px;
+}
+
+/* Override the staff status filter select block to look like the mockup */
+.th-status-filter {
+    background-color: #6dbb7d;
+    padding: 6px 30px 6px 14px;
+    border-radius: 12px;
+    color: white;
+    max-width: 140px;
+}
+
+@media (max-width: 768px) {
+    .th-card-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+    .th-search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .th-search-box {
+        width: 100%;
+    }
+}

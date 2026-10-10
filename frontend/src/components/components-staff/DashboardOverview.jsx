@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { getTodayTransactions } from '../../api/transaction';
-import { getAllProducts } from '../../api/products';
+import { getActiveProducts } from '../../api/products';
 import { formatMoney } from './recordsHelpers';
 import '../components-css/dashboardoverview.css';
 
@@ -27,7 +27,7 @@ function DashboardOverview() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        Promise.all([getTodayTransactions(token), getAllProducts(token)])
+        Promise.all([getTodayTransactions(token), getActiveProducts()])
             .then(([txnData, productsData]) => {
                 setTransactions(txnData);
                 setInventory(

@@ -1,0 +1,539 @@
+/* =====================================================================
+   The page itself is the "container". All @container queries below react
+   to THIS element's width, so they work whether the sidebar is open or
+   collapsed.
+
+   (Overview styles live in inventoryoverview.css, Add Product / Category
+   styles in addproductcategory.css.)
+   ===================================================================== */
+
+.inv-page {
+    container-type: inline-size;
+    container-name: inv;
+    width: 100%;
+    min-width: 0;
+    padding: 10px 0 20px;
+    box-sizing: border-box;
+}
+
+.inv-panel {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+/* ---------- Top row (stacked by default) ---------- */
+
+.inv-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* ---------- List panel + toolbar ---------- */
+
+.inv-list-panel {
+    background: #c7f3ea;
+    padding: 12px;
+}
+
+.inv-list-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.inv-list-title {
+    order: -1;
+    flex: 1 1 100%;
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.inv-search-wrapper {
+    position: relative;
+    flex: 1 1 100%;
+    min-width: 0;
+}
+
+.inv-search-input {
+    width: 100%;
+    padding: 10px 40px 10px 14px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.inv-search-icon {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #2d6a30;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.inv-filter-dropdown-wrapper {
+    position: relative;
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.inv-filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    background: #3d9e5c;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.inv-filter-btn span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.inv-filter-caret {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    filter: brightness(0) invert(1);
+}
+
+/* ---------- Card-layout Status filter ---------- */
+
+.inv-status-select {
+    flex: 1 1 140px;
+    min-width: 0;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    background: #3d9e5c;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.inv-status-select option {
+    color: #11261a;
+    background: #ffffff;
+}
+
+/* ---------- Dropdown menus ---------- */
+
+.inv-filter-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 100%;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 20;
+}
+
+.inv-status-menu {
+    min-width: 130px;
+}
+
+.inv-filter-option {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 13px;
+    color: #11261a;
+    cursor: pointer;
+}
+
+.inv-filter-option:hover {
+    background: #f0f0f0;
+}
+
+/* ---------- Product list: CARD layout by default ---------- */
+
+.inv-head {
+    display: none;
+}
+
+.inv-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+    gap: 12px;
+}
+
+.inv-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 12px 14px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    font-size: 14px;
+}
+
+.inv-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.inv-cell::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #4a6b5a;
+    text-align: left;
+}
+
+.inv-cell-name {
+    font-weight: bold;
+}
+
+.inv-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px 0;
+    color: #555;
+}
+
+.inv-edit-input {
+    flex: 1;
+    min-width: 0;
+    max-width: 60%;
+    padding: 6px 8px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.inv-edit-input:focus {
+    outline: 2px solid #3d9e5c;
+    outline-offset: -1px;
+}
+
+/* ---------- Status pill ---------- */
+
+.inv-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 14px;
+    border: none;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.inv-status-active {
+    background: #d6f1d3;
+    color: #1f6b1a;
+}
+
+.inv-status-inactive {
+    background: #e3e3e3;
+    color: #666;
+}
+
+.inv-status-dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+.inv-pill-caret {
+    width: 10px;
+    height: 10px;
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+/* ---------- Status header dropdown ---------- */
+
+.inv-status-head-wrapper {
+    position: relative;
+}
+
+.inv-status-head-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.inv-head-caret {
+    width: 10px;
+    height: 10px;
+}
+
+/* ---------- Action buttons ---------- */
+
+.inv-action-buttons {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.inv-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    border: none;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #a9d6d6;
+    color: #11261a;
+}
+
+.inv-action-btn img {
+    width: 12px;
+    height: 12px;
+}
+
+.inv-save-btn {
+    background: #3d9e5c;
+    padding: 8px 10px;
+}
+
+.inv-save-btn img {
+    filter: brightness(0) invert(1);
+}
+
+.inv-save-btn-idle {
+    background: #e0e0e0;
+    padding: 8px 10px;
+    cursor: default;
+    opacity: 0.6;
+}
+
+/* =====================================================================
+   Container queries
+   ===================================================================== */
+
+/* ---------- Roomier list toolbar ---------- */
+
+@container inv (min-width: 640px) {
+
+    .inv-list-panel {
+        padding: 16px;
+    }
+
+    .inv-list-title {
+        font-size: 24px;
+    }
+
+    .inv-search-wrapper {
+        flex: 1 1 220px;
+        max-width: 320px;
+    }
+
+    .inv-search-input {
+        font-size: 14px;
+    }
+
+    .inv-filter-dropdown-wrapper,
+    .inv-status-select {
+        flex: 0 0 auto;
+    }
+
+    .inv-filter-btn {
+        width: auto;
+        justify-content: flex-start;
+    }
+
+    .inv-edit-input {
+        font-size: 14px;
+    }
+}
+
+/* =====================================================================
+   Wide enough for the real table
+   Header row + grid rows
+   ===================================================================== */
+
+@container inv (min-width: 960px) {
+
+    .inv-table-wrapper {
+        --inv-cols:
+            minmax(90px, 1fr)
+            100px
+            minmax(150px, 1.8fr)
+            80px
+            100px
+            100px
+            110px
+            120px;
+
+        background: #ffffff;
+        border-radius: 10px;
+    }
+
+    .inv-status-select {
+        display: none;
+    }
+
+    .inv-list-title {
+        order: 0;
+        flex: 0 0 auto;
+        margin-left: auto;
+        text-align: right;
+        font-size: 26px;
+        white-space: nowrap;
+    }
+
+    /* ---------- Table header ---------- */
+
+    .inv-head {
+        display: grid;
+        grid-template-columns: var(--inv-cols);
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px;
+        background: #7fc4c4;
+        border-radius: 10px 10px 0 0;
+        font-weight: bold;
+        font-size: 12px;
+    }
+
+    .inv-head > span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .inv-head > .inv-status-head-wrapper {
+        overflow: visible;
+    }
+
+    /* ================================================================
+       PRODUCT LIST SCROLL
+       Fixed height so 100+ products won't make the whole page too long.
+       ================================================================ */
+
+    .inv-list {
+        display: block;
+        max-height: 380px;
+        overflow-y: auto;
+        overflow-x: visible;
+    }
+
+    /* ---------- Product rows ---------- */
+
+    .inv-item {
+        display: grid;
+        grid-template-columns: var(--inv-cols);
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        background: transparent;
+        border-radius: 0;
+        box-shadow: none;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 13px;
+    }
+
+    .inv-item:last-child {
+        border-bottom: none;
+    }
+
+    .inv-item .inv-cell {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: normal;
+    }
+
+    .inv-item .inv-cell::before {
+        content: none;
+    }
+
+    /* Important:
+       Status and Action cells remain visible even inside the scroll list.
+    */
+
+    .inv-item .inv-cell-status,
+    .inv-item .inv-cell-action {
+        display: flex;
+        overflow: visible;
+    }
+
+    .inv-edit-input {
+        width: 100%;
+        max-width: none;
+        font-size: 13px;
+    }
+
+    .inv-action-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .inv-save-btn,
+    .inv-save-btn-idle {
+        padding: 6px 8px;
+    }
+}
+
+/* =====================================================================
+   Laptop / Desktop
+   Overview and Add Product panel side by side
+   ===================================================================== */
+
+@container inv (min-width: 1100px) {
+
+    .inv-top {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1.1fr);
+    }
+}

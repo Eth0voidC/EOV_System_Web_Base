@@ -1,0 +1,566 @@
+/* =====================================================================
+   Add Product / Category panel
+   ===================================================================== */
+
+.apc-panel {
+    container-type: inline-size;
+    container-name: apc;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    background: #fdfcff;
+    border-radius: 20px;
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    color: #000000;
+}
+
+
+/* ---------- Green header ---------- */
+
+.apc-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    margin: 0;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    background: #45bf65;
+    color: #ffffff;
+    font-size: clamp(17px, 5cqw, 26px);
+    font-weight: bold;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+/* ---------- Body (small screens: one column) ---------- */
+
+.apc-body {
+    --apc-sub: clamp(18px, 5.4cqw, 28px);
+    --apc-label: clamp(14px, 4.2cqw, 20px);
+    --apc-input: 16px;
+    --apc-row: 44px;
+    --apc-btn-h: 44px;
+    --apc-btn-w: clamp(104px, 30cqw, 140px);
+    --apc-btn-font: 13px;
+    --apc-upload: 112px;
+    --apc-div: 5px;
+
+    display: flex;
+    flex-direction: column;
+    padding: 18px 16px 20px;
+}
+
+
+.apc-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+
+.apc-col-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+
+.apc-subtitle {
+    margin: 0 0 14px;
+    font-size: var(--apc-sub);
+    font-weight: bold;
+    line-height: 1.1;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
+/* Divider between category and product */
+
+.apc-col-product {
+    position: relative;
+    margin-top: 22px;
+    padding-top: 22px;
+}
+
+
+.apc-col-product::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--apc-div);
+    border-radius: 3px;
+    background: #c6c5c8;
+}
+
+
+/* ---------- Fields: label + underline ---------- */
+
+.apc-category-fields {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+
+.apc-field-group {
+    width: 100%;
+    min-width: 0;
+}
+
+
+.apc-field {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: var(--apc-row);
+    min-width: 0;
+}
+
+
+.apc-field > span {
+    flex-shrink: 0;
+    font-size: var(--apc-label);
+    font-weight: bold;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+
+/* ---------- Input wrapper ---------- */
+
+.apc-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+}
+
+
+/* ---------- Inputs ---------- */
+
+.apc-field input,
+.apc-field select {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 0 2px;
+    border: 0;
+    border-bottom: 1px solid #333333;
+    border-radius: 0;
+    background: transparent;
+    color: #000000;
+    font-family: inherit;
+    font-size: var(--apc-input);
+    line-height: 1.15;
+    outline: none;
+}
+
+
+.apc-field select {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    text-overflow: ellipsis;
+}
+
+
+.apc-field input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+
+.apc-field input[type='number']::-webkit-outer-spin-button,
+.apc-field input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.apc-field input:focus-visible,
+.apc-field select:focus-visible {
+    border-bottom-color: #1d6b34;
+    box-shadow: 0 1px 0 #1d6b34;
+}
+
+
+/* ---------- Product fields + photo box ---------- */
+
+.apc-product-grid {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+
+.apc-product-fields {
+    min-width: 0;
+}
+
+
+.apc-upload {
+    order: -1;
+    align-self: center;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--apc-upload);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid #121212;
+    border-radius: 0;
+    background: #fdfcff;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+
+.apc-upload:hover {
+    background: #f1f1f1;
+}
+
+
+.apc-upload:focus-visible {
+    outline: 2px solid #1d6b34;
+    outline-offset: 2px;
+}
+
+
+.apc-upload-icon {
+    width: 66%;
+    height: 66%;
+    object-fit: contain;
+    filter: brightness(0);
+}
+
+
+.apc-upload-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.apc-file-input {
+    display: none;
+}
+
+
+/* ---------- CLEAR / ADD buttons ---------- */
+
+.apc-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+
+.apc-btn {
+    width: var(--apc-btn-w);
+    height: var(--apc-btn-h);
+    box-sizing: border-box;
+    padding: 0;
+    border: 2px solid #171717;
+    border-radius: 9px;
+    color: #2e5b27;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: var(--apc-btn-font);
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+}
+
+
+.apc-btn-clear {
+    background: #e8e5e5;
+}
+
+
+.apc-btn-clear:hover {
+    background: #d9d6d6;
+}
+
+
+.apc-btn-add {
+    background: #7aef68;
+}
+
+
+.apc-btn-add:hover {
+    background: #62dd50;
+}
+
+
+.apc-btn:active {
+    transform: translateY(1px);
+}
+
+
+.apc-btn:focus-visible {
+    outline: 2px solid #1d6b34;
+    outline-offset: 2px;
+}
+
+
+/* =====================================================================
+   Panel 420px+: photo box moves beside the fields
+   ===================================================================== */
+
+@container apc (min-width: 420px) {
+
+    .apc-product-grid {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .apc-product-fields {
+        flex: 1;
+    }
+
+    .apc-upload {
+        order: 0;
+        align-self: flex-end;
+        width: 100px;
+    }
+}
+
+
+/* =====================================================================
+   Panel 560px+: the real design
+   ===================================================================== */
+
+@container apc (min-width: 560px) {
+
+    .apc-header {
+        min-height: clamp(46px, 7.7cqw, 72px);
+        font-size: clamp(18px, 4.1cqw, 38px);
+    }
+
+
+    .apc-body {
+        --apc-sub: clamp(17px, 3.7cqw, 34px);
+        --apc-label: clamp(13px, 2.6cqw, 24px);
+        --apc-input: clamp(16px, 2.3cqw, 22px);
+        --apc-row: clamp(34px, 3.9cqw, 44px);
+        --apc-btn-h: clamp(30px, 3.3cqw, 36px);
+        --apc-btn-w: clamp(86px, 11cqw, 112px);
+        --apc-btn-font: clamp(11px, 1.4cqw, 14px);
+        --apc-upload: clamp(84px, 15.4cqw, 150px);
+        --apc-div: clamp(4px, 0.7cqw, 7px);
+
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        padding: 2cqw 0 1.5cqw;
+    }
+
+
+    .apc-subtitle {
+        margin-bottom: 1.5cqw;
+    }
+
+
+    /* left column */
+
+    .apc-col-category .apc-col-content {
+        padding: 0 2.5cqw;
+    }
+
+
+    .apc-category-fields {
+        margin-bottom: 2.2cqw;
+        padding-right: 5.8cqw;
+    }
+
+
+    .apc-category-fields .apc-field-group {
+        width: min(100%, 29cqw);
+    }
+
+
+    /* right column + vertical divider */
+
+    .apc-col-product {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+
+    .apc-col-product::before {
+        display: none;
+    }
+
+
+    .apc-col-product .apc-subtitle {
+        padding-right: 4cqw;
+    }
+
+
+    .apc-col-product .apc-col-content {
+        position: relative;
+        padding: 0 2.3cqw 0 2.1cqw;
+    }
+
+
+    .apc-col-product .apc-col-content::before {
+        content: '';
+        position: absolute;
+        top: -0.7cqw;
+        bottom: 0.6cqw;
+        left: calc(var(--apc-div) / -2);
+        width: var(--apc-div);
+        border-radius: 4px;
+        background: #c6c5c8;
+    }
+
+
+    .apc-product-grid {
+        gap: 2.2cqw;
+    }
+
+
+    .apc-upload {
+        width: var(--apc-upload);
+        aspect-ratio: 134 / 130;
+    }
+
+
+    .apc-actions {
+        gap: 0.9cqw;
+        padding-top: 2.2cqw;
+    }
+}
+
+
+/* =====================================================================
+   Category dropdown
+   ===================================================================== */
+
+.apc-field > .apc-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+
+.apc-select-wrap select {
+    width: 100%;
+    padding-right: calc(var(--apc-input) * 1.3);
+}
+
+
+/* ---------- Category dropdown arrow ---------- */
+
+.apc-select-icon {
+    position: absolute;
+    right: 2px;
+    bottom: 4px;
+
+    width: calc(var(--apc-input) * 0.7);
+    height: auto;
+
+    filter: brightness(0);
+    pointer-events: none;
+}
+
+
+/* =====================================================================
+   Validation messages
+   ===================================================================== */
+
+.apc-error {
+    position: absolute;
+
+    left: 4px;
+    bottom: 4px;
+
+    width: calc(100% - 20px);
+    margin: 0;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+
+    color: #c62828;
+
+    pointer-events: none;
+}
+
+
+/* ---------- Invalid field ---------- */
+
+.apc-field-invalid input,
+.apc-field-invalid select {
+    border-bottom-color: #c62828;
+    box-shadow: 0 1px 0 #c62828;
+}
+
+
+
+/* =====================================================================
+   Product image validation
+   ===================================================================== */
+
+.apc-upload-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.apc-upload-invalid {
+    border-color: #c62828;
+    box-shadow: 0 1px 0 #c62828;
+}
+
+.apc-image-error {
+    position: absolute;
+    left: 50%;
+    top: calc(100% + 6px);
+    transform: translateX(-50%);
+
+    width: max-content;
+    max-width: 180px;
+    margin: 0;
+
+    text-align: center;
+    white-space: nowrap;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+
+    color: #c62828;
+
+    pointer-events: none;
+}
+
+/* ---------- Touch screens ---------- */
+
+@media (pointer: coarse) {
+
+    .apc-btn {
+        min-height: 44px;
+    }
+}

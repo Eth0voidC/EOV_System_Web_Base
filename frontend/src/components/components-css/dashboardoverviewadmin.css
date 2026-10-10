@@ -1,0 +1,371 @@
+/* frontend/src/components/components-css/dashboardoverviewadmin.css */
+
+.admin-dash-page {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-bottom: 30px;
+}
+
+/* ---------- Header ---------- */
+.admin-dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.admin-dash-title {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 900;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-dash-subtitle {
+    margin: 0;
+    font-size: 16px;
+    color: #333333;
+}
+
+.admin-dash-date-picker input {
+    padding: 8px 16px;
+    border: 3px solid #46c068;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+/* ---------- Top KPI Grid ---------- */
+.admin-dash-kpi-grid {
+    display: grid;
+    /* Auto-fit ensures cards stack safely on mobile and spread out on desktop */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.admin-dash-kpi-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-dash-kpi-card h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: #000000;
+}
+
+.kpi-value-placeholder {
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: auto; /* Pushes the text below to the bottom */
+    padding-bottom: 24px;
+}
+
+.kpi-desc {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2f5f22;
+}
+
+.kpi-trend {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.kpi-trend.positive {
+    color: #4fd15a;
+}
+
+.kpi-trend.negative {
+    color: #d93025; /* Standard red for negative trends */
+}
+
+.kpi-trend span {
+    color: #999999;
+    font-weight: normal;
+}
+
+/* ---------- Main Content Grid ---------- */
+.admin-dash-main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    align-items: start; /* Prevents cards from stretching vertically unnecessarily */
+}
+
+/* Left Column */
+.admin-dash-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0; /* Prevents chart from blowing out grid width */
+}
+
+.admin-dash-chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px 20px 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 900;
+    color: #000000;
+}
+
+.chart-header p {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase;
+}
+
+.chart-year-select {
+    background: #46c068;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+}
+
+.chart-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.admin-dash-collection-card {
+    background: #eaffe5; /* Light green tint from mockup */
+    border-radius: 12px;
+    padding: 24px 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.admin-dash-collection-card h3 {
+    margin: 0 0 16px 0;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.collection-value {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.admin-dash-collection-card p {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* Right Column */
+.admin-dash-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-dash-top-products-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    min-height: 250px;
+}
+
+.admin-dash-top-products-card h3 {
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* ---------- Top Selling Products List ---------- */
+/* ---------- Top Selling Products List ---------- */
+.top-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 10px;
+    
+    /* SCROLLING FIX */
+    max-height: 232px; /* Locks the height to perfectly match the left column */
+    overflow-y: auto;  /* Adds vertical scrolling */
+    overflow-x: hidden; 
+    padding-right: 12px; /* Adds breathing room so the scrollbar doesn't touch the text */
+}
+
+/* Custom Scrollbar for the Products List */
+.top-products-list::-webkit-scrollbar {
+    width: 6px;
+}
+.top-products-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.top-products-list::-webkit-scrollbar-thumb {
+    background: #c7c7c9;
+    border-radius: 10px;
+}
+.top-products-list::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+
+.top-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.top-product-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Groups the image and the text together */
+.top-product-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0; /* Allows text truncation if needed */
+}
+
+/* Thumbnail styling */
+.top-product-thumb {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* Consistent sky-to-grass gradient from the staff side */
+.top-product-placeholder {
+    background: linear-gradient(to bottom, #c4e6fb 0%, #eaf6fd 60%, #b5d56a 60%, #8aa50f 100%);
+}
+
+.top-product-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.top-product-name {
+    font-weight: 800;
+    font-size: 15px;
+    color: #11261a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.top-product-sold {
+    font-size: 13px;
+    color: #666666;
+    font-weight: bold;
+}
+
+.top-product-revenue {
+    font-weight: 900;
+    font-size: 15px;
+    color: #2f5f22;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+/* ---------- Inventory Card ---------- */
+.admin-dash-inventory-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.admin-dash-inventory-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.inventory-value-amount {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.inventory-summary-title {
+    margin-top: 30px !important;
+}
+
+.inventory-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* ---------- Responsiveness ---------- */
+@media (max-width: 1200px) {
+    /* Collapse to a single column layout on smaller screens */
+    .admin-dash-main-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-dash-right-col {
+        flex-direction: row; /* Put Top Products and Inventory side-by-side */
+    }
+    
+    .admin-dash-top-products-card,
+    .admin-dash-inventory-card {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-dash-right-col {
+        flex-direction: column; /* Stack them again on mobile */
+    }
+    .chart-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+}

@@ -24,7 +24,11 @@ const createDelivery = async (req, res) => {
 
     const deliveryResult = await client.query(
       `INSERT INTO delivery (user_id, received_date, received_time)
-       VALUES ($1, CURRENT_DATE, CURRENT_TIME)
+        VALUES (
+          $1,
+          (NOW() AT TIME ZONE 'Asia/Manila')::date,
+          (NOW() AT TIME ZONE 'Asia/Manila')::time
+        )
        RETURNING delivery_id, received_date, received_time`,
       [req.user.id]
     );
@@ -66,4 +70,121 @@ const createDelivery = async (req, res) => {
   }
 };
 
-module.exports = { createDelivery };
+
+const getDeliveryHistory = async (req, res) => {
+    try {
+        const { month, year } = req.query;
+
+        if (!month || !year) {
+            return res.status(400).json({
+                error: 'Month and year are required',
+            });
+        }
+
+        const selectedMonth = Number(month);
+        const selectedYear = Number(year);
+
+        if (
+            !Number.isInteger(selectedMonth) ||
+            selectedMonth < 1 ||
+            selectedMonth > 12 ||
+            !Number.isInteger(selectedYear) ||
+            selectedYear < 2000 ||
+            selectedYear > 2100
+        ) {
+            return res.status(400).json({
+                error: 'Invalid month or year',
+            });
+        }
+
+        const result = await pool.query(
+            `SELECT
+                d.delivery_id,
+                d.received_date,
+                d.received_time,
+                u.first_name,
+                u.last_name,
+                dd.product_item_id,
+                p.product_name,
+                p.price AS unit_price,
+                dd.quantity_received,
+                (p.price * dd.quantity_received) AS total_amount
+            FROM delivery d
+            JOIN "User" u
+                ON u.user_id = d.user_id
+            LEFT JOIN delivery_detail dd
+                ON dd.delivery_id = d.delivery_id
+            LEFT JOIN product_item p
+                ON p.product_item_id = dd.product_item_id
+            WHERE EXTRACT(MONTH FROM d.received_date) = $1
+              AND EXTRACT(YEAR FROM d.received_date) = $2
+            ORDER BY d.received_date DESC,
+                     d.received_time DESC,
+                     d.delivery_id DESC`,
+            [selectedMonth, selectedYear]
+        );
+
+        // Group all deliveries by date.
+        const deliveriesMap = new Map();
+
+        for (const row of result.rows) {
+            const dateKey = String(row.received_date).slice(0, 10);
+
+            if (!deliveriesMap.has(dateKey)) {
+                deliveriesMap.set(dateKey, {
+                    id: dateKey,
+                    date: row.received_date,
+                    items: [],
+                    totalValue: 0,
+                    people: [],
+                    deliveryTimes: [],
+                });
+            }
+
+            const dailyDelivery = deliveriesMap.get(dateKey);
+
+            // Keep receiver names and times for all deliveries that day.
+            const person =
+                `${row.first_name} ${row.last_name}`;
+
+            if (!dailyDelivery.people.includes(person)) {
+                dailyDelivery.people.push(person);
+            }
+
+            const time = String(row.received_time).slice(0, 8);
+
+            if (!dailyDelivery.deliveryTimes.includes(time)) {
+                dailyDelivery.deliveryTimes.push(time);
+            }
+
+            if (row.product_item_id !== null) {
+                const quantity = Number(row.quantity_received) || 0;
+                const unitPrice = Number(row.unit_price) || 0;
+                const total = Number(row.total_amount) || 0;
+
+                dailyDelivery.items.push({
+                    product_item_id: row.product_item_id,
+                    delivery_id: row.delivery_id,
+                    name: row.product_name,
+                    qty: quantity,
+                    unit_price: unitPrice,
+                    total,
+                });
+
+                dailyDelivery.totalValue += total;
+            }
+        }
+
+        return res.status(200).json(
+            Array.from(deliveriesMap.values())
+        );
+    } catch (err) {
+        console.error('Get delivery history error:', err);
+
+        return res.status(500).json({
+            error: 'Server error',
+        });
+    }
+};
+
+module.exports = { createDelivery, getDeliveryHistory,};

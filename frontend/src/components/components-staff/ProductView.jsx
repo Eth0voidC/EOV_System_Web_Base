@@ -8,6 +8,7 @@ import CartIcon from '../../assets/shopping-cart-icon.png';
 import { getAllProducts } from '../../api/products';
 import { getAllEmployees } from '../../api/employees';
 import { createTransaction } from '../../api/transaction';
+import { getActiveProducts } from '../../api/products';
 
 import '../components-css/productcard.css';
 import '../components-css/shoppingcart.css';
@@ -29,8 +30,7 @@ function ProductView() {
     const [submitError, setSubmitError] = useState('');
 
     const loadProducts = () => {
-        const token = localStorage.getItem('token');
-        return getAllProducts(token).then((data) => {
+    return getActiveProducts().then((data) => {
             setProducts(
                 data.map((p) => ({
                     id: p.product_item_id,
@@ -46,7 +46,7 @@ function ProductView() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        Promise.all([getAllProducts(token), getAllEmployees(token)])
+        Promise.all([getActiveProducts(), getAllEmployees(token)])
             .then(([productsData, employeesData]) => {
                 setProducts(
                     productsData.map((p) => ({

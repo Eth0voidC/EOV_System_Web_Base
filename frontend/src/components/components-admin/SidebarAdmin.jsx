@@ -4,7 +4,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import dash2Icon from '../../assets/dashboard2-icon.png';
 import reportIcon from '../../assets/report-icon.png';
 import inventory2Icon from '../../assets/inventory2-icon.png';
-import helpIcon from '../../assets/help-icon.png';
 import switchmodeIcon from '../../assets/switchmode-icon.png';
 import arrowIcon from '../../assets/arrow-right.png';
 import userAvatar from '../../assets/user1-icon.jpg';
@@ -27,10 +26,11 @@ const CUSTOMER_LINKS = [
 ];
 
 function SidebarAdmin() {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(() => window.innerWidth < 768);
     const [openSection, setOpenSection] = useState(null); // 'reports' | 'customer' | null
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const [rotateClockwise, setRotateClockwise] = useState(true);
 
     const toggleSection = (section) => {
         if (collapsed) {
@@ -143,13 +143,18 @@ function SidebarAdmin() {
             </nav>
 
             <div className="sidebar-bottom">
-                <button type="button" className="sidebar-item">
-                    <img src={helpIcon} alt="" className="sidebar-icon" />
-                    {!collapsed && <span>Help</span>}
-                </button>
-
-                <button type="button" className="sidebar-item">
-                    <img src={switchmodeIcon} alt="" className="sidebar-icon" />
+                <button
+                    type="button"
+                    className="sidebar-item"
+                    onClick={() => setRotateClockwise(prev => !prev)}
+                >
+                    <img
+                        src={switchmodeIcon}
+                        alt=""
+                        className={`sidebar-icon switchmode-icon ${
+                            rotateClockwise ? 'rotate-clockwise' : 'rotate-counterclockwise'
+                        }`}
+                    />
                     {!collapsed && <span>Switch Mode</span>}
                 </button>
 

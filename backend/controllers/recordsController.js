@@ -1,7 +1,7 @@
 const { pool } = require('../config/db');
 
 // GET /api/records/:employeeId
-// Returns the employee's transactions (with items), deductions, and balance.
+// Returns the employee's transactions (both active and archived), deductions, and balance.
 const getEmployeeRecords = async (req, res) => {
   const employeeId = Number(req.params.employeeId);
 
@@ -10,42 +10,80 @@ const getEmployeeRecords = async (req, res) => {
   }
 
   try {
+    // 1. Get the current active balance
     const balanceResult = await pool.query(
       `SELECT total_balance FROM employee_balance WHERE employee_id = $1`,
       [employeeId]
     );
 
-    // Items are grouped per product so the same product bought twice
-    // in one day shows as one line (the modal uses the name as its key).
+    // 2. Get ALL Transactions (Active/Pending + Archived/Deducted)
     const txnResult = await pool.query(
-      `SELECT et.employee_transaction_id AS id,
-              to_char(et.transaction_date, 'YYYY-MM-DD') AS date,
-              COALESCE((
-                SELECT json_agg(
-                         json_build_object('name', x.product_name, 'qty', x.qty, 'price', x.unit_price)
-                         ORDER BY x.product_name
-                       )
-                FROM (
-                  SELECT p.product_name,
-                         SUM(td.quantity)::int AS qty,
-                         td.unit_price::float8 AS unit_price
-                  FROM transaction_detail td
-                  JOIN product_item p ON p.product_item_id = td.product_item_id
-                  WHERE td.employee_transaction_id = et.employee_transaction_id
-                  GROUP BY p.product_name, td.unit_price
-                ) x
-              ), '[]'::json) AS items
-       FROM employee_transaction et
-       WHERE et.employee_id = $1
-       ORDER BY et.transaction_date DESC, et.employee_transaction_id DESC`,
+      `
+      -- Active (Pending) Transactions
+      SELECT et.employee_transaction_id AS id,
+             to_char(et.transaction_date, 'YYYY-MM-DD') AS date,
+             'Pending' AS status,
+             COALESCE((
+               SELECT json_agg(json_build_object('name', p.product_name, 'qty', td.quantity, 'price', td.unit_price::float8) ORDER BY p.product_name)
+               FROM transaction_detail td
+               JOIN product_item p ON p.product_item_id = td.product_item_id
+               WHERE td.employee_transaction_id = et.employee_transaction_id
+             ), '[]'::json) AS items
+      FROM employee_transaction et
+      WHERE et.employee_id = $1
+
+      UNION ALL
+
+      -- Archived (Deducted) Transactions
+      SELECT eta.employee_transaction_archive_id AS id,
+             to_char(eta.transaction_date, 'YYYY-MM-DD') AS date,
+             'Deducted' AS status,
+             COALESCE((
+               SELECT json_agg(json_build_object('name', p.product_name, 'qty', tda.quantity, 'price', tda.unit_price::float8) ORDER BY p.product_name)
+               FROM transaction_detail_archive tda
+               JOIN product_item p ON p.product_item_id = tda.product_item_id
+               WHERE tda.employee_transaction_archive_id = eta.employee_transaction_archive_id
+             ), '[]'::json) AS items
+      FROM employee_transaction_archive eta
+      WHERE eta.employee_id = $1
+      
+      ORDER BY date DESC, id DESC
+      `,
+      [employeeId]
+    );
+
+    // 3. Get Deductions History (with nested daily totals for the drill-down modal)
+    const deductionResult = await pool.query(
+      `
+      SELECT ed.employee_deduction_id AS id,
+             to_char(ed.deduction_date, 'YYYY-MM-DD') AS date,
+             to_char(ed.period_start, 'YYYY-MM-DD') AS "periodStart",
+             to_char(ed.period_end, 'YYYY-MM-DD') AS "periodEnd",
+             COALESCE((
+               SELECT json_agg(
+                  json_build_object(
+                      'date', to_char(eta.transaction_date, 'YYYY-MM-DD'),
+                      'amount', (
+                          SELECT SUM(total_amount)::float8
+                          FROM transaction_detail_archive tda
+                          WHERE tda.employee_transaction_archive_id = eta.employee_transaction_archive_id
+                      )
+                  ) ORDER BY eta.transaction_date
+               )
+               FROM employee_transaction_archive eta
+               WHERE eta.employee_deduction_id = ed.employee_deduction_id
+             ), '[]'::json) AS entries
+      FROM employee_deduction ed
+      WHERE ed.employee_id = $1
+      ORDER BY ed.deduction_date DESC
+      `,
       [employeeId]
     );
 
     res.status(200).json({
       balance: balanceResult.rows.length ? Number(balanceResult.rows[0].total_balance) : 0,
-      // No paid/unpaid column yet, so everything counts as Pending until deductions exist.
-      transactions: txnResult.rows.map((t) => ({ ...t, status: 'Pending' })),
-      deductions: [], // not implemented yet
+      transactions: txnResult.rows,
+      deductions: deductionResult.rows,
     });
   } catch (err) {
     console.error(err);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 
 import SearchIcon from '../../assets/search-icon.png';
-import { getAllProducts } from '../../api/products';
+import { getActiveProducts } from '../../api/products';
 
 import '../components-css/inventoryview.css';
 
@@ -24,7 +24,7 @@ function InventoryView() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        getAllProducts(token)
+        getActiveProducts()
             .then((data) => {
                 setProducts(
                     data.map((p) => ({

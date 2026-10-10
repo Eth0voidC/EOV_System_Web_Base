@@ -297,7 +297,8 @@
     color: #9a6700;
 }
 
-.rec-restricted {
+.rec-restricted,
+.rec-inactive {
     background: #fde4e2;
     color: #b3261d;
 }
