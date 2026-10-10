@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api/transactions';
+
+import API_BASE_URL from './api';
+
+const API_URL = `${API_BASE_URL}/api/transactions`;
 
 export const createTransaction = async (token, employeeId, items) => {
   const res = await fetch(API_URL, {
@@ -7,7 +10,10 @@ export const createTransaction = async (token, employeeId, items) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ employee_id: employeeId, items }),
+    body: JSON.stringify({
+      employee_id: employeeId,
+      items,
+    }),
   });
 
   const data = await res.json();

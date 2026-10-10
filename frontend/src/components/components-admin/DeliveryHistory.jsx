@@ -4,7 +4,7 @@ import DeliveryTruckIcon from '../../assets/delivery-icon.png';
 import '../components-css/deliveryhistory.css';
 import { printDeliveryReceipt } from '../components-staff/recordsHelpers.js';
 
-const API_URL = 'http://localhost:5000/api/deliveries';
+const API_URL = `${API_BASE_URL}/api/deliveries`;
 
 function formatDeliveryDate(dateString) {
     const datePart = String(dateString).slice(0, 10);

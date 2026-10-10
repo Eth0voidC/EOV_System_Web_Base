@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:5000/api/employees';
+import API_BASE_URL from './api';
+
+const API_URL = `${API_BASE_URL}/api/employees`;
 
 export const getAllEmployees = async (token) => {
   const res = await fetch(API_URL, {
@@ -11,5 +13,5 @@ export const getAllEmployees = async (token) => {
     throw new Error(data.error || 'Failed to load employees');
   }
 
-  return data; // array of { employee_id, employee_code, last_name, first_name, employment_status, account_status }
+  return data; // array of employee records
 };

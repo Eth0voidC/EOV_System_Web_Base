@@ -1,5 +1,6 @@
+import API_BASE_URL from './api';
 
-const API_URL = 'http://localhost:5000/api/dashboard';
+const API_URL = `${API_BASE_URL}/api/dashboard`;
 
 export const getDashboardAnalytics = async (token, year, month) => {
   const params = new URLSearchParams({

@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:5000/api/products';
+
+import API_BASE_URL from './api';
+
+const API_URL = `${API_BASE_URL}/api/products`;
 
 const fetchProducts = async (query = '') => {
   const token = localStorage.getItem('token');
@@ -17,73 +20,89 @@ const fetchProducts = async (query = '') => {
   return data;
 };
 
-// Every product (Inventory, Delivery, Dashboard, future Admin pages)
+// Every product
 export const getAllProducts = () => fetchProducts();
 
-// Active products only (Staff Product page)
+// Active products only
 export const getActiveProducts = () => fetchProducts('?status=active');
 
 // POST /api/products (Requires Admin)
 export const createProduct = async (formData) => {
   const token = localStorage.getItem('token');
-  
+
   const res = await fetch(API_URL, {
     method: 'POST',
-    // Do NOT set Content-Type; the browser sets it automatically with boundaries for FormData
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
-  
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Failed to create product');
+
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to create product');
+  }
+
   return data;
 };
 
 // PUT /api/products/:id (Requires Admin)
 export const updateProduct = async (id, productData) => {
   const token = localStorage.getItem('token');
-  
+
   const res = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',
-    headers: { 
+    headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(productData),
   });
-  
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Failed to update product');
+
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to update product');
+  }
+
   return data;
 };
 
 // DELETE /api/products/:id (Requires Admin)
 export const deleteProduct = async (id) => {
   const token = localStorage.getItem('token');
-  
+
   const res = await fetch(`${API_URL}/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
-  
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Failed to delete product');
+
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to delete product');
+  }
+
   return data;
 };
+
 // PATCH /api/products/:id/status (Requires Admin)
 export const updateProductStatus = async (id, status) => {
   const token = localStorage.getItem('token');
-  
+
   const res = await fetch(`${API_URL}/${id}/status`, {
     method: 'PATCH',
-    headers: { 
+    headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ status }),
   });
-  
+
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Failed to update product status');
+
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to update product status');
+  }
+
   return data;
 };
