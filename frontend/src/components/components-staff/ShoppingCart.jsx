@@ -25,11 +25,25 @@ function ShoppingCart({
     const canSubmit = !isEmpty && selectedEmployee && !isRestricted && !submitting;
 
     // Suggestions while typing (hidden once an employee is chosen)
+    
     const suggestions =
         employeeQuery.trim() && !selectedEmployee
             ? employees
-                  .filter((emp) => emp.name.toLowerCase().includes(employeeQuery.trim().toLowerCase()))
-                  .slice(0, 6)
+                .filter((emp) => {
+                    const isActiveEmployment =
+                        emp.employmentStatus?.trim().toLowerCase() !== 'inactive';
+
+                    const isActiveAccount =
+                        emp.status?.trim().toLowerCase() === 'active';
+
+                    const matchesName =
+                        emp.name.toLowerCase().includes(
+                            employeeQuery.trim().toLowerCase()
+                        );
+
+                    return isActiveEmployment && isActiveAccount && matchesName;
+                })
+                .slice(0, 6)
             : [];
 
     // Tells the staff why Submit is disabled

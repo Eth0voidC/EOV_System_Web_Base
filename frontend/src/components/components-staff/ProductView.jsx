@@ -5,7 +5,6 @@ import ShoppingCart from './ShoppingCart';
 import SearchIcon from '../../assets/search-icon.png';
 import CartIcon from '../../assets/shopping-cart-icon.png';
 
-import { getAllProducts } from '../../api/products';
 import { getAllEmployees } from '../../api/employees';
 import { createTransaction } from '../../api/transaction';
 import { getActiveProducts } from '../../api/products';
@@ -57,14 +56,20 @@ function ProductView() {
                         image: p.image,
                     }))
                 );
-
                 setEmployees(
-                    employeesData.map((e) => ({
-                        id: e.employee_id,
-                        name: `${e.last_name}, ${e.first_name}`,
-                        status: e.account_status, // 'Active' | 'Restricted'
-                        employmentStatus: e.employment_status, // 'Regular' | 'Extra' | 'Inactive'
-                    })).filter((e) => e.employmentStatus !== 'Inactive') // hide Inactive from search entirely
+                    employeesData
+                        .filter(
+                            (e) =>
+                                e.employment_status?.trim().toLowerCase() !== 'inactive' &&
+                                e.account_status?.trim().toLowerCase() === 'active'
+                        )
+                        .map((e) => ({
+                            id: e.employee_id,
+                            name: `${e.last_name}, ${e.first_name}`,
+                            status: e.account_status,
+                            employmentStatus: e.employment_status,
+                        }))
+                        
                 );
             })
             .catch((err) => setError(err.message))

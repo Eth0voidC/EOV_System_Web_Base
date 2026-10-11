@@ -1,0 +1,882 @@
+/* =====================================================================
+   Register Customer (Employee) page.
+
+   Sizes were measured from the 1920x1080 mockup and are written as shares
+   of each card's OWN width (cqw = 1% of that card's width). So each card
+   matches the mockup at its mockup width and scales smoothly at any other
+   width, whether the sidebar is open or collapsed.
+   ===================================================================== */
+
+.rc-page {
+    container-type: inline-size;
+    container-name: rc;
+    width: 100%;
+    max-width: 1680px;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 10px 0 20px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+}
+
+.rc-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(12px, 1.85cqw, 28px);
+    margin-bottom: clamp(16px, 3.75cqw, 56px);
+}
+
+/* Overview and Form side by side once the page is wide enough */
+@container rc (min-width: 900px) {
+    .rc-top {
+        grid-template-columns: minmax(0, 575fr) minmax(0, 863fr);
+    }
+}
+
+.rco-card,
+.rcf-card {
+    container-type: inline-size;
+    min-width: 0;
+    box-sizing: border-box;
+    background: #fdfcff;
+    border-radius: 16px;
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+}
+
+.rco-card {
+    container-name: rco;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* stays centered if the form card is taller */
+}
+
+.rcf-card {
+    container-name: rcf;
+}
+
+/* =====================================================================
+   1. Employee Overview   (design width 575px)
+   ===================================================================== */
+.rco-title {
+    margin: 3.8cqw 0 8.2cqw;
+    font-size: clamp(20px, 6.8cqw, 44px);
+    font-weight: bold;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.rco-row {
+    display: grid;
+}
+
+.rco-row-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0 2.5cqw;
+}
+
+.rco-row-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 74%;
+    margin: 5.4cqw auto 5.2cqw;
+}
+
+.rco-stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.1cqw;
+    min-width: 0;
+    text-align: center;
+}
+
+.rco-label {
+    font-size: clamp(11px, 2.8cqw, 18px);
+    font-weight: bold;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.rco-value {
+    font-size: clamp(20px, 5.9cqw, 38px);
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+/* the gray slanted bars between stats */
+.rco-stat:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -0.85cqw;
+    width: clamp(2px, 0.52cqw, 4px);
+    height: clamp(30px, 8.3cqw, 52px);
+    border-radius: 3px;
+    background: #c6c5c8;
+    transform: rotate(1deg);
+}
+
+/* Very small card: 2 stats per line */
+@container rco (max-width: 339.98px) {
+    .rco-row-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        row-gap: 5cqw;
+    }
+
+    .rco-row-4 .rco-stat:not(:first-child)::before {
+        display: none;
+    }
+
+    .rco-row-4 .rco-stat:nth-child(even)::before {
+        display: block;
+    }
+
+    .rco-row-2 {
+        width: auto;
+        padding: 0 2.5cqw;
+    }
+}
+
+/* =====================================================================
+   2. Employee Personal Information Form   (design width 863px)
+   ===================================================================== */
+.rcf-title {
+    margin: 2.55cqw 4.7cqw 0;
+    font-size: clamp(20px, 4.5cqw, 44px);
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.rcf-form {
+    padding: 5.1cqw 4.7cqw 4.6cqw;
+}
+
+/* Last / First / Middle */
+.rcf-names {
+    display: grid;
+    grid-template-columns: minmax(0, 270fr) minmax(0, 245fr) minmax(0, 209fr);
+    column-gap: 3.2cqw;
+}
+
+.rcf-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8cqw;
+    min-width: 0;
+}
+
+.rcf-field label {
+    font-size: clamp(13px, 2.15cqw, 21px);
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.rcf-field input {
+    width: 100%;
+    height: clamp(40px, 5.1cqw, 50px);
+    box-sizing: border-box;
+    padding: 0 2.4cqw;
+    border: 1px solid #6f726f;
+    border-radius: 10px;
+    background: #f4fbf5;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(16px, 2cqw, 20px);
+    outline: none;
+}
+
+.rcf-field input::placeholder {
+    color: #888c88;
+}
+
+.rcf-field input:focus-visible,
+.rcf-select-wrap select:focus-visible {
+    border-color: #1d6b34;
+    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
+}
+
+/* Employment Status + Save / Reset */
+.rcf-status-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 7.1cqw;
+    margin-top: 2cqw;
+}
+
+.rcf-status {
+    display: flex;
+    flex-direction: column;
+    gap: 1cqw;
+}
+
+.rcf-status label {
+    font-size: clamp(15px, 2.8cqw, 26px);
+    font-weight: bold;
+    line-height: 1.1;
+}
+
+.rcf-select-wrap {
+    position: relative;
+    width: clamp(150px, 24.4cqw, 240px);
+}
+
+.rcf-select-wrap select {
+    width: 100%;
+    height: clamp(40px, 5.1cqw, 50px);
+    box-sizing: border-box;
+    padding: 0 clamp(32px, 4.4cqw, 48px) 0 2.7cqw;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #1d5a30;
+    border-radius: 3px;
+    background: #45bf65;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(15px, 2.7cqw, 26px);
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+
+.rcf-select-wrap select option {
+    background: #ffffff;
+    color: #11261a;
+}
+
+.rcf-select-icon {
+    position: absolute;
+    top: 50%;
+    right: 2.1cqw;
+    width: clamp(14px, 2.2cqw, 22px);
+    height: auto;
+    transform: translateY(-50%);
+    filter: brightness(0) invert(1);
+    pointer-events: none;
+}
+
+.rcf-actions {
+    display: flex;
+    gap: 2.3cqw;
+    margin-bottom: -0.3cqw;
+}
+
+.rcf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.3cqw;
+    width: clamp(110px, 19.4cqw, 190px);
+    height: clamp(40px, 5.45cqw, 54px);
+    box-sizing: border-box;
+    padding: 0;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    background: #7aef68;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(15px, 3.07cqw, 28px);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.rcf-btn:hover {
+    background: #66e054;
+}
+
+.rcf-btn:active {
+    transform: translateY(1px);
+}
+
+.rcf-btn:focus-visible {
+    outline: 2px solid #1d6b34;
+    outline-offset: 2px;
+}
+
+.rcf-btn-icon {
+    flex: none;
+    width: clamp(20px, 4.05cqw, 36px);
+    height: clamp(20px, 4.05cqw, 36px);
+}
+
+img.rcf-btn-icon {
+    object-fit: contain;
+    filter: brightness(0); /* the design's icons are solid black */
+}
+
+/* Message line (only takes space when there is a message) */
+.rcf-message {
+    margin: 1.6cqw 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: clamp(13px, 1.7cqw, 16px);
+    font-weight: bold;
+}
+
+.rcf-message-error {
+    color: #b3261e;
+}
+
+.rcf-message-success {
+    color: #1f6b1a;
+}
+
+/* Form narrower than 600px: one column */
+@container rcf (max-width: 599.98px) {
+    .rcf-title {
+        margin: 18px 16px 0;
+        font-size: clamp(20px, 6.2cqw, 28px);
+    }
+
+    .rcf-form {
+        padding: 16px;
+    }
+
+    .rcf-names {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 14px;
+    }
+
+    .rcf-field {
+        gap: 6px;
+    }
+
+    .rcf-field label {
+        font-size: 15px;
+    }
+
+    .rcf-field input {
+        height: 44px;
+        padding: 0 14px;
+    }
+
+    .rcf-status-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .rcf-status {
+        gap: 6px;
+    }
+
+    .rcf-status label {
+        font-size: 16px;
+    }
+
+    .rcf-select-wrap {
+        width: 100%;
+    }
+
+    .rcf-select-wrap select {
+        height: 44px;
+        padding: 0 40px 0 14px;
+        font-size: 17px;
+    }
+
+    .rcf-select-icon {
+        right: 14px;
+    }
+
+    .rcf-actions {
+        gap: 12px;
+        margin-bottom: 0;
+    }
+
+    .rcf-btn {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        height: 46px;
+        gap: 10px;
+        font-size: 18px;
+    }
+
+    .rcf-message {
+        margin-top: 12px;
+    }
+}
+
+/* =====================================================================
+   3. Full Employee List   (design width 1465px)
+   ===================================================================== */
+.rcl-panel {
+    container-type: inline-size;
+    container-name: rcl;
+    min-width: 0;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ----- light teal band: search + title ----- */
+.rcl-band {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px 16px 14px;
+    background: #a7ebe3;
+}
+
+.rcl-title {
+    order: -1;
+    margin: 0;
+    color: #091b0d;
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    font-size: clamp(20px, 6vw, 30px);
+    font-weight: bold;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.rcl-search {
+    position: relative;
+    min-width: 0;
+}
+
+.rcl-search-input {
+    width: 100%;
+    height: 44px;
+    box-sizing: border-box;
+    padding: 0 60px 0 14px;
+    border: 2px solid #000000;
+    border-radius: 9px;
+    background: #efefef;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    outline: none;
+}
+
+.rcl-search-input:focus-visible {
+    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.35);
+}
+
+.rcl-search-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 30px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: #4b9240;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.rcl-search-btn img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+/* ----- table (small screens: each employee is a card) ----- */
+.rcl-table {
+    --rcl-cols:
+        minmax(90px, 1.15fr)  /* Employee_Code */
+        minmax(100px, 1.2fr)  /* Last_Name */
+        minmax(100px, 1.2fr)  /* First_Name */
+        minmax(75px, 0.8fr)   /* Middle_Initial */
+        minmax(100px, 1fr)     /* Balance */
+        minmax(115px, 1.1fr)  /* Emp_Status */
+        minmax(115px, 1.1fr)  /* Acct._Status */
+        minmax(145px, 1.4fr); /* Actions */
+
+    width: 100%;
+    background: #ffffff;
+}
+
+.rcl-head {
+    display: none;
+}
+
+.rcl-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    gap: 12px;
+    padding: 12px;
+}
+
+.rcl-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid #cfe3e0;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+.rcl-row-editing {
+    border-color: #3d9e5c;
+    background: #f1fbf3;
+}
+
+.rcl-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+    text-align: right;
+}
+
+.rcl-cell-balance {
+    font-weight: bold;
+    color: #176b3a;
+    font-variant-numeric: tabular-nums;
+}
+
+.rcl-edit-input {
+    width: 100%;
+    min-width: 0;
+    height: 32px;
+    box-sizing: border-box;
+    padding: 0 5px;
+    border: 1px solid #3d9e5c;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #000000;
+    font: inherit;
+    text-align: center;
+}
+
+.rcl-edit-input:focus {
+    outline: 2px solid rgba(61, 158, 92, 0.3);
+    border-color: #278344;
+}
+
+.rcl-cell::before {
+    content: attr(data-label);
+    flex: none;
+    color: #4a6b5a;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.rcl-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 36px 0;
+    color: #555555;
+    font-size: 15px;
+    text-align: center;
+}
+
+/* dropdown "pills" in each row */
+.rcl-select-wrap {
+    position: relative;
+    width: 60%;
+    max-width: 200px;
+}
+
+.rcl-select-wrap select {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    padding: 0 32px 0 12px;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: #71c6d1;
+    color: #0b2f35;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+
+.rcl-select-wrap select:disabled {
+    cursor: default;
+    opacity: 1;
+    -webkit-text-fill-color: #0b2f35;
+}
+
+.rcl-select-wrap select option {
+    background: #ffffff;
+    color: #11261a;
+}
+
+.rcl-row-editing .rcl-select-wrap select {
+    border-color: #3d9e5c;
+    background: #ffffff;
+}
+
+.rcl-select-icon {
+    position: absolute;
+    top: 50%;
+    right: 11px;
+    width: 14px;
+    height: auto;
+    transform: translateY(-50%);
+    filter: brightness(0) invert(1);
+    pointer-events: none;
+}
+
+.rcl-row-editing .rcl-select-icon {
+    filter: brightness(0);
+}
+
+/* EDIT / save buttons */
+.rcl-cell-actions {
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.rcl-cell-actions::before {
+    margin-right: auto;
+}
+
+.rcl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: #71c6d1;
+    color: #ffffff;
+    font-family: "Times New Roman", Times, "Liberation Serif", serif;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.rcl-btn img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.rcl-btn-edit {
+    width: 96px;
+}
+
+.rcl-btn-save {
+    width: 64px;
+}
+
+.rcl-btn:hover:not(:disabled) {
+    background: #5fb7c4;
+}
+
+.rcl-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.rcl-btn:focus-visible {
+    outline: 2px solid #1d6b34;
+    outline-offset: 2px;
+}
+
+.rcl-row-editing .rcl-btn-save {
+    background: #3d9e5c;
+    opacity: 1;
+}
+
+.rcl-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ----- list panel 700px and up: search on the left, title centered ----- */
+@container rcl (min-width: 700px) {
+    .rcl-band {
+        flex-direction: row;
+        align-items: center;
+        gap: 2cqw;
+        padding: 1.8cqw 2.5cqw 1cqw;
+    }
+
+    .rcl-title {
+        order: 0;
+        flex: 1;
+        min-width: 0;
+        font-size: clamp(20px, 2.7cqw, 44px);
+    }
+
+    .rcl-search {
+        flex: 0 1 34cqw;
+        min-width: 220px;
+    }
+
+    .rcl-search-input {
+        height: clamp(40px, 2.9cqw, 46px);
+        padding-right: clamp(56px, 5.2cqw, 68px);
+    }
+
+    .rcl-search-btn {
+        right: 0.7cqw;
+        width: clamp(40px, 3.6cqw, 56px);
+        height: clamp(26px, 2.25cqw, 34px);
+    }
+}
+
+/* ----- list panel 980px and up: the real table ----- */
+@container rcl (min-width: 700px) {
+    .rcl-table {
+        width: 100%;
+        min-width: 100px;
+        max-height: 500px;
+        min-height: clamp(300px, 35cqw, 560px);
+        overflow: auto;
+    }
+
+    .rcl-head {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: var(--rcl-cols);
+        align-items: stretch;
+        height: clamp(44px, 3.75cqw, 60px);
+        box-sizing: border-box;
+        border: 1px solid #1a1a1a;
+        background: #71c6d1;
+        font-size: clamp(12px, 1.37cqw, 21px);
+        font-weight: bold;
+    }
+
+    .rcl-head > span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        padding: 0 0.5cqw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .rcl-head > span:not(:last-child) {
+        border-right: 1px solid #1a1a1a;
+    }
+
+    .rcl-body {
+        display: block;
+        padding: 0;
+    }
+
+    .rcl-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: var(--rcl-cols);
+        align-items: center;
+        gap: 0;
+        height: clamp(44px, 3.2cqw, 56px);
+        padding: 0 1px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    .rcl-row:hover {
+        background: #f3fbfa;
+    }
+
+    .rcl-row-editing,
+    .rcl-row-editing:hover {
+        background: #f1fbf3;
+    }
+
+    /* the thin line under every row (inset like the design) */
+    .rcl-row::after {
+        content: '';
+        position: absolute;
+        right: 0.7cqw;
+        bottom: 0;
+        left: 0.7cqw;
+        height: 1px;
+        background: #444444;
+    }
+
+    .rcl-cell {
+        display: block;
+        padding: 0 0.6cqw;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(13px, 1.1cqw, 17px);
+    }
+
+    .rcl-cell::before {
+        content: none;
+    }
+
+    .rcl-cell-control {
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        overflow: visible;
+    }
+
+    .rcl-select-wrap {
+        width: calc(100% - 14px);
+        max-width: 190px;
+    }
+
+    .rcl-select-wrap select {
+        height: clamp(34px, 2.53cqw, 42px);
+        padding: 0 clamp(28px, 2.4cqw, 36px) 0 12px;
+        font-size: clamp(13px, 1cqw, 15px);
+    }
+
+    .rcl-select-icon {
+        right: 10px;
+        width: clamp(11px, 1.2cqw, 16px);
+    }
+
+    .rcl-cell-actions {
+        display: flex;
+        justify-content: flex-start;
+        gap: clamp(8px, 1cqw, 16px);
+        padding: 0 0 0 0.5cqw;
+        overflow: visible;
+    }
+
+    .rcl-cell-actions::before {
+        margin-right: 0;
+    }
+
+    .rcl-btn {
+        height: clamp(34px, 2.53cqw, 42px);
+        font-size: clamp(12px, 1.1cqw, 16px);
+    }
+
+    .rcl-btn img {
+        width: clamp(16px, 1.5cqw, 22px);
+        height: clamp(16px, 1.5cqw, 22px);
+    }
+
+    .rcl-btn-edit {
+        width: clamp(88px, 7.2cqw, 118px);
+    }
+
+    .rcl-btn-save {
+        width: clamp(60px, 4.9cqw, 80px);
+    }
+}
