@@ -51,6 +51,8 @@ function App() {
           <Route path="reports/logs" element={<Logs />} />
           <Route path="customer/register" element={<RegisterCustomer />} />
           <Route path="customer/create-account" element={<CreateAccount />} />
+          <Route path="product" element={<ProductView />} />
+          <Route path="delivery" element={<DeliveryView />} />
           <Route path="*" element={<p>Page not found</p>} />
         </Route>
 

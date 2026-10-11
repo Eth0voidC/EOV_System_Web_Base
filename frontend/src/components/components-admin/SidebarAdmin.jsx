@@ -10,6 +10,8 @@ import userAvatar from '../../assets/user1-icon.jpg';
 import menuIcon from '../../assets/menu-icon.png';
 import dropdownIcon from '../../assets/dropdown-icon.png';
 import customerIcon from '../../assets/customer-icon.png';
+import iventoryIcon from '../../assets/inventory-icon.png';
+import deliveryIcon from '../../assets/delivery-icon.png';
 
 import '../components-css/sidebaradmin.css';
 
@@ -31,6 +33,7 @@ function SidebarAdmin() {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const navigate = useNavigate();
     const [rotateClockwise, setRotateClockwise] = useState(true);
+    const [isStaffMode, setIsStaffMode] = useState(false);
 
     const toggleSection = (section) => {
         if (collapsed) {
@@ -80,6 +83,28 @@ function SidebarAdmin() {
                     <img src={inventory2Icon} alt="" className="sidebar-icon" />
                     {!collapsed && <span>Inventory</span>}
                 </NavLink>
+
+                {isStaffMode && (
+                    <>
+                        <NavLink to="/admin/product" className="sidebar-item">
+                            <img
+                                src={iventoryIcon}
+                                alt=""
+                                className="sidebar-icon"
+                            />
+                            {!collapsed && <span>Product</span>}
+                        </NavLink>
+
+                        <NavLink to="/admin/delivery" className="sidebar-item">
+                            <img
+                                src={deliveryIcon}
+                                alt=""
+                                className="sidebar-icon"
+                            />
+                            {!collapsed && <span>Delivery</span>}
+                        </NavLink>
+                    </>
+                )}
 
                 <div className="sidebar-section">
                     <button
@@ -146,7 +171,10 @@ function SidebarAdmin() {
                 <button
                     type="button"
                     className="sidebar-item"
-                    onClick={() => setRotateClockwise(prev => !prev)}
+                    onClick={() => {
+                        setIsStaffMode(prev => !prev);
+                        setRotateClockwise(prev => !prev);
+                    }}
                 >
                     <img
                         src={switchmodeIcon}

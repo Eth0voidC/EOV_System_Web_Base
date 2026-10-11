@@ -7,16 +7,18 @@ import API_BASE_URL from '../../api/api.js';
 
 const API_URL = `${API_BASE_URL}/api/deliveries`;
 
-function formatDeliveryDate(dateString) {
-    const datePart = String(dateString).slice(0, 10);
-    const [year, month, day] = datePart.split('-').map(Number);
 
-    return new Date(year, month - 1, day).toLocaleDateString('en-PH', {
+function formatDeliveryDate(dateString) {
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString('en-PH', {
+        timeZone: 'Asia/Manila',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     });
 }
+
 
 function formatDeliveryTime(timeString) {
     if (!timeString) return 'N/A';
