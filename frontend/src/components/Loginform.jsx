@@ -1,6 +1,8 @@
 import userIcon from '../assets/user-icon.png';
 import lockIcon from '../assets/lock-icon.png';
-import Logo from '../assets/store-logo.jpg';
+import Logo from '../assets/logos.jpg';
+import Cblogo from'../assets/cb-sislogo.png';
+import Background from '../assets/background.jpg';
 import "./components-css/loginform.css";
 
 import { useState } from 'react';
@@ -13,25 +15,27 @@ function Loginform() {
     const [errorMessage, setErrorMessage] = useState('');
     const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [loginStatus, setLoginStatus] = useState('LOGIN');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         if (username.trim() === '' && password.trim() === '') {
-            setErrorMessage('please input your username and password');
+            setErrorMessage('Please input your username and password.');
             setHasError(true);
             return;
         }
 
         if (username.trim() === '' || password.trim() === '') {
-            setErrorMessage('please fill all form');
+            setErrorMessage('Please fill all fields.');
             setHasError(true);
             return;
         }
-        
+
         const usernameInvalid = /[^a-zA-Z0-9.]/.test(username);
+
         if (usernameInvalid) {
-            setErrorMessage('invalid input');
+            setErrorMessage('Invalid input.');
             setHasError(true);
             setUsername('');
             setPassword('');
@@ -39,8 +43,19 @@ function Loginform() {
         }
 
         setIsLoading(true);
+        setLoginStatus('AUTHENTICATING...');
+
         try {
+            // Short pause before sending the login request
+            await new Promise(resolve => setTimeout(resolve, 600));
+
+            setLoginStatus('VERIFYING ACCOUNT...');
+
             const data = await loginUser(username, password);
+
+            setLoginStatus('LOGGING IN...');
+
+            await new Promise(resolve => setTimeout(resolve, 800));
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.role);
@@ -51,22 +66,21 @@ function Loginform() {
             } else if (data.role === 'Staff') {
                 navigate('/staff');
             } else {
-                // Unexpected role from the backend — don't leave the
-                // user stuck with no feedback and a logged-in session
-                // that goes nowhere.
-                setErrorMessage('Your account role is not recognized. Please contact an administrator.');
+                setErrorMessage('Your account role is not recognized.');
                 setHasError(true);
+
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');
                 localStorage.removeItem('username');
             }
         } catch (err) {
-            setErrorMessage(err.message || 'invalid username or password');
+            setErrorMessage(err.message || 'Invalid username or password.');
             setHasError(true);
             setUsername('');
             setPassword('');
         } finally {
             setIsLoading(false);
+            setLoginStatus('LOGIN');
         }
     };
 
@@ -85,13 +99,19 @@ function Loginform() {
     };
 
     return (
+        <div className="login-page"
+        style={{ backgroundImage: `url(${Background})` }}>
         <div className="form-card-container">
             <div className="logo-section">
                 <img src={Logo} alt="store logo" className="Logo" />
             </div>
 
             <div className="form-section">
+
+                <img src={Cblogo} alt="EOV logo" className="login-header-logo" />
+
                 <h1>Welcome Back!</h1>
+                <h2>Log in to your EOV System Account </h2>
 
                 <div className="form-inputs">
                     <div className="input-wrapper">
@@ -138,14 +158,19 @@ function Loginform() {
                     </div>
                 </div>
 
-                <button className="login-button" onClick={handleLogin} disabled={isLoading}>
-                    {isLoading ? 'LOGGING IN...' : 'LOGIN'}
+                <button
+                    className="login-button"
+                    onClick={handleLogin}
+                    disabled={isLoading}
+                >
+                    {loginStatus}
                 </button>
 
                 {errorMessage && (
                     <p className="error-text">{errorMessage}</p>
                 )}
             </div>
+        </div>
         </div>
     );
 }

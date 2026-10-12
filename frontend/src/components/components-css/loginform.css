@@ -1,25 +1,41 @@
 /* Full card container holding both logo and form side-by-side */
+
+.login-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .form-card-container {
-  display: flex;
-  flex-direction: row;
-  background-color: #e0e0e0;
-  border-radius: 15px;
-  box-shadow: 0 8px 25px rgba(139, 141, 139, 0.982);
-  overflow: hidden;
-  max-width: 800px;
-  width: 100%;
-  font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 900px;
+    height: 600px;
+    flex-shrink: 0;
+
+    background-color: #f9faf7;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
 }
 
 /* Left side logo styling */
 .logo-section {
   flex: 1;
-  background-color: #ffffff;
+  background-color: #fff9d6;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  border-right: 2px solid #d0d0d0;
+  border-right: 2px solid #ffffff;
 }
 
 .Logo {
@@ -29,6 +45,14 @@
   border-radius: 10px;
 }
 
+.login-header-logo {
+    width: 200px;
+    height: 100px;
+    object-fit:cover;
+    align-self: center;
+    margin-bottom: 2px;
+}
+
 /* Right side form section */
 .form-section {
   flex: 1;
@@ -36,14 +60,22 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 40px;
 }
 
 .form-section h1 {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: bold;
-  color: #000000;
-  margin-bottom: 30px;
+  color: #31523a;
+  margin-bottom: 3px;
   text-align: center;
+}
+
+.form-section h2{
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: lighter;
 }
 
 /* Inputs and Icons styling */
@@ -84,7 +116,7 @@
 .login-button {
   width: 100%;
   padding: 12px;
-  background-color: #10db2b;
+  background-color: #036c21;
   color: white;
   border: none;
   border-radius: 25px;
@@ -139,4 +171,57 @@
 
 .toggle-password:hover {
   color: #333333;
+}
+
+@media (max-width: 700px) {
+    .login-page {
+        padding: 16px;
+    }
+
+    .form-card-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+        max-width: 450px;
+    }
+
+    .logo-section {
+        display: none;
+    }
+
+    .form-section {
+        padding: 32px 24px;
+        margin-bottom: 0;
+    }
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+}
+
+.login-page {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
