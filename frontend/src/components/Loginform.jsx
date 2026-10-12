@@ -102,6 +102,17 @@ function Loginform() {
         <div className="login-page"
         style={{ backgroundImage: `url(${Background})` }}>
         <div className="form-card-container">
+
+                <button
+                    type="button"
+                    className="back-landing-button"
+                    onClick={() => navigate('/')}
+                    aria-label="Back to landing page"
+                >
+                    <span aria-hidden="true"><h1>←</h1></span>
+                    Back to Home
+                </button>
+
             <div className="logo-section">
                 <img src={Logo} alt="store logo" className="Logo" />
             </div>
@@ -111,7 +122,7 @@ function Loginform() {
                 <img src={Cblogo} alt="EOV logo" className="login-header-logo" />
 
                 <h1>Welcome Back!</h1>
-                <h2>Log in to your EOV System Account </h2>
+                <h2>Log in to your CB-SIS System Account </h2>
 
                 <div className="form-inputs">
                     <div className="input-wrapper">

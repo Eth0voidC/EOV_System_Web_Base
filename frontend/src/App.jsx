@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './index.css';
 
 //Import Pages
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import StaffDashboard from './pages/StaffDashboard';
@@ -30,8 +31,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* The default route ("/") loads the Login page */}
-        <Route path="/" element={<Login />} />
+        {/* The default route ("/") loads the Landing Page */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
 
         {/* AdminDashboard is the layout; children render inside its <Outlet /> */}
         <Route
