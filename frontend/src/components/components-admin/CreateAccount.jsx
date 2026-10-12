@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect} from 'react';
 import { createUser, getUsers, updateUser } from '../../api/auth';
 
-import Logo from '../../assets/kick1.jpg';
+import Logo from '../../assets/logos.jpg';
 import SaveIcon from '../../assets/save-icon.png';
 import EditIcon from '../../assets/pencil-icon.png';
 import SearchIcon from '../../assets/search-icon.png';
