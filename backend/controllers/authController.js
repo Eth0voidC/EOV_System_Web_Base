@@ -104,4 +104,157 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { login, createUser };
+
+const getUsers = async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        u.user_id,
+        u.last_name,
+        u.first_name,
+        u.middle_initial,
+        u.username,
+        u.role_id,
+        r.role_name AS role
+      FROM "User" u
+      JOIN roles r ON u.role_id = r.role_id
+      ORDER BY u.user_id ASC
+    `);
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const userId = Number(req.params.id);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    const {
+      last_name,
+      first_name,
+      middle_initial,
+      role_id,
+      username,
+      password,
+    } = req.body;
+
+    if (
+      typeof last_name !== 'string' ||
+      !last_name.trim() ||
+      typeof first_name !== 'string' ||
+      !first_name.trim() ||
+      typeof username !== 'string' ||
+      !username.trim() ||
+      !Number.isInteger(role_id) ||
+      role_id <= 0
+    ) {
+      return res.status(400).json({
+        error: 'Valid name, username, and role are required',
+      });
+    }
+
+    if (
+      middle_initial !== undefined &&
+      middle_initial !== null &&
+      typeof middle_initial !== 'string'
+    ) {
+      return res.status(400).json({
+        error: 'Invalid middle initial',
+      });
+    }
+
+    if (
+      password !== undefined &&
+      (typeof password !== 'string' || password.length < 8)
+    ) {
+      return res.status(400).json({
+        error: 'Password must be at least 8 characters',
+      });
+    }
+
+    const updatedUser = await withTransaction(async (client) => {
+      const existing = await client.query(
+        `SELECT user_id
+         FROM "User"
+         WHERE username = $1 AND user_id <> $2`,
+        [username.trim(), userId]
+      );
+
+      if (existing.rows.length > 0) {
+        const err = new Error('Username already exists');
+        err.isDuplicate = true;
+        throw err;
+      }
+
+      const passwordHash = password
+        ? await bcrypt.hash(password, 10)
+        : null;
+
+      const result = await client.query(
+        `UPDATE "User"
+         SET last_name = $1,
+             first_name = $2,
+             middle_initial = $3,
+             role_id = $4,
+             username = $5,
+             password = COALESCE($6, password)
+         WHERE user_id = $7
+         RETURNING
+           user_id,
+           last_name,
+           first_name,
+           middle_initial,
+           username,
+           role_id`,
+        [
+          last_name.trim(),
+          first_name.trim(),
+          middle_initial?.trim() || null,
+          role_id,
+          username.trim(),
+          passwordHash,
+          userId,
+        ]
+      );
+
+      if (result.rows.length === 0) {
+        const err = new Error('User not found');
+        err.isNotFound = true;
+        throw err;
+      }
+
+      return result.rows[0];
+    });
+
+    return res.status(200).json({
+      message: 'Account updated successfully',
+      user: updatedUser,
+    });
+  } catch (err) {
+    if (err.isDuplicate || err.code === '23505') {
+      return res.status(409).json({
+        error: 'Username already exists',
+      });
+    }
+
+    if (err.isNotFound) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    if (err.code === '23503') {
+      return res.status(400).json({ error: 'Invalid role ID' });
+    }
+
+    console.error(err.message);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+module.exports = { login, createUser, getUsers, updateUser };
