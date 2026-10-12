@@ -19,7 +19,6 @@ const REPORTS_LINKS = [
     { label: 'Delivery History', path: '/admin/reports/delivery-history' },
     { label: 'Transaction History', path: '/admin/reports/transaction-history' },
     { label: 'Deduction Processing', path: '/admin/reports/deduction-processing' },
-    { label: 'Logs', path: '/admin/reports/logs' },
 ];
 
 const CUSTOMER_LINKS = [
