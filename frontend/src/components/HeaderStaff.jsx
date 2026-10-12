@@ -4,7 +4,7 @@ import inventoryIcon from '../assets/inventory-icon.png';
 import productIcon from '../assets/product-icon.png';
 import deliveryIcon from '../assets/delivery-icon.png';
 
-import userAvatar from '../assets/user1-icon.jpg';
+import userAvatar from '../assets/user2.jpg';
 import menuIcon from '../assets/menu-icon.png';
 
 import './components-css/headerstaff.css';
@@ -25,7 +25,7 @@ function HeaderStaff() {
         localStorage.removeItem('role');
         localStorage.removeItem('username');
 
-        navigate('/', { replace: true });
+        navigate('/login', { replace: true });
     };
 
     return (

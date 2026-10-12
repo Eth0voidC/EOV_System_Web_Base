@@ -46,7 +46,7 @@ function SidebarAdmin() {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
         localStorage.removeItem('username');
-        navigate('/', { replace: true });
+        navigate('/login', { replace: true });
     };
 
     return (
