@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { FaGithub } from 'react-icons/fa';
 import './LandingPage.css';
 import DashboardPreview from '../assets/dashboard-preview.jpg';
 import Cblogo from '../assets/cb-sislogo.png';
@@ -362,19 +363,53 @@ function LandingPage() {
                         <h3 className="footer-developer-heading">
                             Developers
                         </h3>
+                        <p>
+                            <a
+                                className="footer-developer-link"
+                                href="https://github.com/Eth0voidC"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Romnick James Bargo</span>
+                                <FaGithub size={15} aria-hidden="true" />
+                            </a>
+                        </p>
 
-                        <p>Eth0void.C</p>
-                        <p>Cryptic.</p>
-                        <p>Reyes, Ace Dave D.</p>
-                        <p>Sta. Rosa, Aerosh Yezel F.</p>
-                        <a
-                            className="footer-developer-link"
-                            href="https://github.com/Eth0voidC"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            GitHub Profile ↗
-                        </a>
+                        <p>
+                            <a
+                                className="footer-developer-link"
+                                href="https://github.com/Cryptic7505"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Marcos, Ralph Geoffery S.</span>
+                                <FaGithub size={15} aria-hidden="true" />
+                            </a>
+                        </p>
+
+                        <p>
+                            <a
+                                className="footer-developer-link"
+                                href=""
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Reyes, Ace Dave D.</span>
+                                <FaGithub size={15} aria-hidden="true" />
+                            </a>
+                        </p>
+
+                        <p>
+                            <a
+                                className="footer-developer-link"
+                                href=""
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <span>Sta. Rosa, Aerosh Yezel F.</span>
+                                <FaGithub size={15} aria-hidden="true" />
+                            </a>
+                        </p>                        
                     </div>
                 </div>
 

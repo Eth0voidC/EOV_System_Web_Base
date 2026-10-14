@@ -913,6 +913,7 @@
     text-decoration: none;
     overflow-wrap: anywhere;
     transition: color 0.2s ease;
+    
 }
 
 .footer-developer-link:hover {
@@ -937,6 +938,12 @@
     color: var(--primary-light);
     font-size: 11px;
     line-height: 1.8;
+}
+
+.footer-developer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ========================================

@@ -6,7 +6,7 @@ import reportIcon from '../../assets/report-icon.png';
 import inventory2Icon from '../../assets/inventory2-icon.png';
 import switchmodeIcon from '../../assets/switchmode-icon.png';
 import arrowIcon from '../../assets/arrow-right.png';
-import userAvatar from '../../assets/user1-icon.jpg';
+import userAvatar from '../../assets/user.png';
 import menuIcon from '../../assets/menu-icon.png';
 import dropdownIcon from '../../assets/dropdown-icon.png';
 import customerIcon from '../../assets/customer-icon.png';
@@ -22,7 +22,7 @@ const REPORTS_LINKS = [
 ];
 
 const CUSTOMER_LINKS = [
-    { label: 'Register Customer', path: '/admin/customer/register' },
+    { label: 'Employee Register', path: '/admin/customer/register' },
     { label: 'Create Account', path: '/admin/customer/create-account' },
 ];
 
@@ -144,7 +144,7 @@ function SidebarAdmin() {
                         <img src={customerIcon} alt="" className="sidebar-icon" />
                         {!collapsed && (
                             <>
-                                <span>Customer / Account</span>
+                                <span>Employee / User</span>
                                 <img
                                     src={dropdownIcon}
                                     alt=""
