@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import Closebutton from '../../assets/close-button-icon.png';
 import DeliveryTruckIcon from '../../assets/delivery-icon.png';
 import '../components-css/deliveryhistory.css';
@@ -129,6 +129,10 @@ function DeliveryHistory() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+            handleGenerate();
+        }, []);
 
     const handlePrintReceipt = () => {
         printDeliveryReceipt(selectedDelivery);

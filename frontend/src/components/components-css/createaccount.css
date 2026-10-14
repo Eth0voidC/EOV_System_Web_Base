@@ -1,10 +1,5 @@
 /* =====================================================================
    Create Account page.
-
-   Sizes were measured from the 1920x1080 mockup and are written as shares
-   of each card's OWN width (cqw = 1% of that card's width). Each card
-   matches the mockup at its mockup width and scales smoothly at any other
-   width, whether the sidebar is open or collapsed.
    ===================================================================== */
 
 .ca-page {
@@ -20,7 +15,8 @@
     color: #000000;
 }
 
-/* ---------- Top: logo + form (stacked on small pages) ---------- */
+/* ---------- Top: logo + form ---------- */
+
 .ca-top {
     display: flex;
     flex-direction: column;
@@ -35,7 +31,13 @@
     aspect-ratio: 1;
     overflow: hidden;
     border-radius: 50%;
-    background: linear-gradient(to bottom, #c4e6fb 0%, #eaf6fd 60%, #b5d56a 60%, #8aa50f 100%);
+    background: linear-gradient(
+        to bottom,
+        #c4e6fb 0%,
+        #eaf6fd 60%,
+        #b5d56a 60%,
+        #8aa50f 100%
+    );
 }
 
 .ca-logo img {
@@ -45,7 +47,6 @@
     object-fit: fill;
 }
 
-/* Side by side once the page is wide enough (logo 362px, form 732px in the mockup) */
 @container ca (min-width: 1100px) {
     .ca-top {
         flex-direction: row;
@@ -67,8 +68,9 @@
 }
 
 /* =====================================================================
-   1. User Account Form   (design width 732px)
+   1. User Account Form
    ===================================================================== */
+
 .caf-card {
     container-type: inline-size;
     container-name: caf;
@@ -81,7 +83,6 @@
     font-family: "Times New Roman", Times, "Liberation Serif", serif;
 }
 
-/* small card: everything in one column, sizes in px */
 .caf-title {
     margin: 18px 16px 0;
     font-size: clamp(20px, 6.2cqw, 28px);
@@ -145,7 +146,8 @@
     box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
 }
 
-/* show / hide password eye */
+/* Show / hide password */
+
 .caf-eye {
     position: absolute;
     top: 50%;
@@ -170,6 +172,7 @@
 }
 
 /* Role + Save + Reset */
+
 .caf-bottom {
     display: flex;
     flex-direction: column;
@@ -263,10 +266,11 @@
 
 img.caf-btn-icon {
     object-fit: contain;
-    filter: brightness(0); /* the design's icons are solid black */
+    filter: brightness(0);
 }
 
-/* message line (only takes space when there is a message) */
+/* Form feedback */
+
 .caf-message {
     margin: 12px 0 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -282,7 +286,6 @@ img.caf-btn-icon {
     color: #1f6b1a;
 }
 
-/* very narrow: put the photo-less stack tighter */
 @container caf (max-width: 359.98px) {
     .caf-title {
         margin: 14px 12px 0;
@@ -293,7 +296,8 @@ img.caf-btn-icon {
     }
 }
 
-/* ----- form card 520px and up: two columns, the real design ----- */
+/* Form card: two columns */
+
 @container caf (min-width: 520px) {
     .caf-title {
         margin: 1.35cqw 4.9cqw 0;
@@ -307,7 +311,7 @@ img.caf-btn-icon {
     .caf-grid {
         grid-template-columns: minmax(0, 307fr) minmax(0, 283fr);
         grid-template-rows: repeat(3, auto);
-        grid-auto-flow: column; /* left column first (Last, First, Initial), then right */
+        grid-auto-flow: column;
         column-gap: 8.9cqw;
         row-gap: 1.8cqw;
     }
@@ -387,20 +391,21 @@ img.caf-btn-icon {
 }
 
 /* =====================================================================
-   2. Full User Account List   (design width 1464px)
+   2. Full User Account List
+   Responsive mobile cards + compact desktop table
    ===================================================================== */
+
 .cal-panel {
     container-type: inline-size;
     container-name: cal;
-
-    
-
     min-width: 0;
     overflow: hidden;
     background: #ffffff;
     border-radius: 16px;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Notifications */
 
 .cal-feedback {
     position: fixed;
@@ -410,26 +415,6 @@ img.caf-btn-icon {
     width: fit-content;
     max-width: min(400px, calc(100vw - 48px));
     pointer-events: none;
-}
-
-.cal-message {
-    margin: 0;
-    padding: 12px 18px;
-    border-radius: 2px;
-    background: #ffffff;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.cal-message-success {
-    color: #2d9925;
-    border-left: 10px solid #37b31e;
-}
-
-.cal-message-error {
-    color: #b3261e;
-    border-left: 10px solid #b3261e;
 }
 
 .cal-notification-header {
@@ -443,20 +428,40 @@ img.caf-btn-icon {
 .cal-notification-header .cal-message {
     margin: 0;
     max-width: 100%;
+    padding: 8px 12px;
     font-size: 12px;
     line-height: 1.3;
     overflow-wrap: anywhere;
     text-align: center;
 }
 
-/* ----- light teal band: search + title ----- */
+.cal-message {
+    margin: 0;
+    padding: 10px 16px;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.cal-message-success {
+    color: #1f6b1a;
+    border-left: 6px solid #37b31e;
+}
+
+.cal-message-error {
+    color: #b3261e;
+    border-left: 6px solid #b3261e;
+}
+
+/* Search and title band */
+
 .cal-band {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
-    padding: 16px 16px 14px;
-    background: #a7ebe3;
+    padding: 16px;
+    background: #c5f2eb;
 }
 
 .cal-title {
@@ -470,6 +475,8 @@ img.caf-btn-icon {
     text-align: center;
 }
 
+/* Search */
+
 .cal-search {
     position: relative;
     min-width: 0;
@@ -480,32 +487,33 @@ img.caf-btn-icon {
     height: 44px;
     box-sizing: border-box;
     padding: 0 60px 0 14px;
-    border: 2px solid #000000;
-    border-radius: 9px;
-    background: #efefef;
+    border: 1px solid #777777;
+    border-radius: 22px;
+    background: #ffffff;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
 }
 
 .cal-search-input:focus-visible {
-    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.35);
+    border-color: #1d6b34;
+    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
 }
 
 .cal-search-btn {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 30px;
+    width: 36px;
+    height: 32px;
     padding: 0;
     border: 0;
-    border-radius: 6px;
-    background: #4b9240;
+    border-radius: 50%;
+    background: #397b3c;
     transform: translateY(-50%);
     cursor: pointer;
 }
@@ -517,27 +525,22 @@ img.caf-btn-icon {
     filter: brightness(0) invert(1);
 }
 
-/* message line for row saves (only takes space when there is a message) */
-.cal-message {
-    margin: 0;
-    padding: 10px 16px;
-    background: #ffffff;
-    font-size: 14px;
-    font-weight: bold;
-}
+/* =====================================================================
+   Account table: mobile card layout by default
+   ===================================================================== */
 
-.cal-message-error {
-    color: #b3261e;
-}
-
-.cal-message-success {
-    color: #1f6b1a;
-}
-
-/* ----- small panel: each account is a card ----- */
 .cal-table {
-    --cal-cols: minmax(64px, 125fr) minmax(100px, 154fr) minmax(110px, 173fr) minmax(56px, 70fr)
-        minmax(104px, 191fr) minmax(130px, 261fr) minmax(150px, 282fr) minmax(200px, 207fr);
+    --cal-cols:
+        minmax(90px, 1.15fr)
+        minmax(100px, 1.2fr)
+        minmax(100px, 1.2fr)
+        minmax(75px, 0.8fr)
+        minmax(100px, 1fr)
+        minmax(115px, 1.1fr)
+        minmax(115px, 1.1fr)
+        minmax(145px, 1.4fr);
+
+    width: 100%;
     background: #ffffff;
 }
 
@@ -547,7 +550,7 @@ img.caf-btn-icon {
 
 .cal-body {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 12px;
     padding: 12px;
 }
@@ -563,7 +566,12 @@ img.caf-btn-icon {
     background: #ffffff;
 }
 
-.cal-row-editing {
+.cal-row:hover {
+    background: #f5fbfb;
+}
+
+.cal-row-editing,
+.cal-row-editing:hover {
     border-color: #3d9e5c;
     background: #f1fbf3;
 }
@@ -598,26 +606,27 @@ img.caf-btn-icon {
     text-align: center;
 }
 
-/* inputs shown while a row is being edited */
+/* Inputs while editing */
+
 .cal-edit-input {
     flex: 1;
     width: 100%;
     max-width: 60%;
     min-width: 0;
-    height: 38px;
+    height: 32px;
     box-sizing: border-box;
-    padding: 0 10px;
+    padding: 0 5px;
     border: 1px solid #3d9e5c;
-    border-radius: 6px;
+    border-radius: 4px;
     background: #ffffff;
     color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    outline: none;
+    font: inherit;
+    text-align: center;
 }
 
 .cal-edit-input:focus-visible {
-    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
+    outline: 2px solid rgba(61, 158, 92, 0.3);
+    border-color: #278344;
 }
 
 .cal-edit-initial {
@@ -625,22 +634,24 @@ img.caf-btn-icon {
     text-transform: uppercase;
 }
 
+/* Dropdowns */
+
 .cal-select-wrap {
     position: relative;
     flex: 1;
     max-width: 60%;
+    min-width: 0;
 }
 
 .cal-select-wrap select {
     width: 100%;
-    height: 38px;
+    height: 40px;
     box-sizing: border-box;
-    padding: 0 30px 0 10px;
-    -webkit-appearance: none;
+    padding: 0 32px 0 12px;
     appearance: none;
-    border: 1px solid #3d9e5c;
+    border: 1px solid transparent;
     border-radius: 6px;
-    background: #ffffff;
+    background: #71c6d1;
     color: #0b2f35;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
@@ -650,9 +661,9 @@ img.caf-btn-icon {
 }
 
 .cal-select-wrap select:disabled {
-    cursor: not-allowed;
-    background: #e8eeea;
-    -webkit-text-fill-color: #555555;
+    cursor: default;
+    opacity: 1;
+    -webkit-text-fill-color: #0b2f35;
 }
 
 .cal-select-wrap select option {
@@ -660,17 +671,28 @@ img.caf-btn-icon {
     color: #11261a;
 }
 
+.cal-row-editing .cal-select-wrap select {
+    border-color: #3d9e5c;
+    background: #ffffff;
+}
+
 .cal-select-icon {
     position: absolute;
     top: 50%;
-    right: 10px;
-    width: 13px;
+    right: 11px;
+    width: 14px;
     height: auto;
     transform: translateY(-50%);
+    filter: brightness(0) invert(1);
     pointer-events: none;
 }
 
-/* password cell: dots (or the new-password input) + eye */
+.cal-row-editing .cal-select-icon {
+    filter: brightness(0);
+}
+
+/* Password cell */
+
 .cal-cell-password {
     justify-content: flex-end;
 }
@@ -708,7 +730,8 @@ img.caf-btn-icon {
     border-radius: 6px;
 }
 
-/* EDIT / save buttons */
+/* Edit / Save buttons */
+
 .cal-cell-actions {
     justify-content: flex-end;
     gap: 10px;
@@ -778,20 +801,24 @@ img.caf-btn-icon {
     white-space: nowrap;
 }
 
-/* ----- list panel 700px and up: search on the left, title centered ----- */
+/* =====================================================================
+   Desktop list: 700px and up
+   ===================================================================== */
+
 @container cal (min-width: 700px) {
     .cal-band {
         flex-direction: row;
         align-items: center;
-        gap: 2cqw;
-        padding: 1.7cqw 2.5cqw 1cqw;
+        gap: 12px;
+        padding: 16px;
     }
 
     .cal-title {
         order: 0;
         flex: 1;
         min-width: 0;
-        font-size: clamp(20px, 2.87cqw, 46px);
+        font-size: clamp(20px, 2.7cqw, 44px);
+        text-align: center;
     }
 
     .cal-search {
@@ -800,23 +827,24 @@ img.caf-btn-icon {
     }
 
     .cal-search-input {
-        height: clamp(40px, 2.9cqw, 46px);
-        padding-right: clamp(56px, 5.2cqw, 68px);
+        height: 38px;
+        padding-right: 48px;
     }
 
     .cal-search-btn {
-        right: 0.7cqw;
-        width: clamp(40px, 3.6cqw, 56px);
-        height: clamp(26px, 2.25cqw, 34px);
+        right: 5px;
+        width: 30px;
+        height: 30px;
     }
-}
 
-/* ----- list panel 1000px and up: the real table ----- */
-@container cal (min-width: 1000px) {
     .cal-table {
-        max-height: 65vh;
-        min-height: 400px;
-        overflow-y: auto;
+        width: 100%;
+        min-width: 0;
+        height: auto;
+        max-height: 795px;
+        min-height: 0;
+        overflow: auto;
+        background: #ffffff;
     }
 
     .cal-head {
@@ -826,11 +854,12 @@ img.caf-btn-icon {
         display: grid;
         grid-template-columns: var(--cal-cols);
         align-items: stretch;
-        height: clamp(44px, 3.75cqw, 60px);
+        height: 38px;
         box-sizing: border-box;
-        border: 1px solid #1a1a1a;
-        background: #71c6d1;
-        font-size: clamp(12px, 1.37cqw, 21px);
+        border: none;
+        background: #80c4c5;
+        color: #111111;
+        font-size: 13px;
         font-weight: bold;
     }
 
@@ -839,19 +868,19 @@ img.caf-btn-icon {
         align-items: center;
         justify-content: center;
         min-width: 0;
-        padding: 0 0.5cqw;
+        padding: 0 8px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .cal-head > span:nth-child(-n + 7) {
-        border-right: 1px solid #1a1a1a;
+    .cal-head > span:not(:last-child) {
+        border-right: none;
     }
 
     .cal-body {
         display: block;
-        padding: 0.24cqw 0 0;
+        padding: 0 8px;
     }
 
     .cal-row {
@@ -860,15 +889,15 @@ img.caf-btn-icon {
         grid-template-columns: var(--cal-cols);
         align-items: center;
         gap: 0;
-        height: clamp(44px, 3.2cqw, 56px);
-        padding: 0 1px;
-        border: 0;
+        height: 45px;
+        padding: 0;
+        border: none;
         border-radius: 0;
-        background: transparent;
+        background: #ffffff;
     }
 
     .cal-row:hover {
-        background: #f3fbfa;
+        background: #f5fbfb;
     }
 
     .cal-row-editing,
@@ -876,48 +905,62 @@ img.caf-btn-icon {
         background: #f1fbf3;
     }
 
-    /* the thin line under every row (inset like the design) */
     .cal-row::after {
-        content: '';
+        content: "";
         position: absolute;
-        right: 0.7cqw;
+        right: 0;
         bottom: 0;
-        left: 0.7cqw;
+        left: 0;
         height: 1px;
-        background: #444444;
+        background: #dddddd;
     }
 
     .cal-cell {
         display: block;
-        padding: 0 0.6cqw;
+        min-width: 0;
+        padding: 0 8px;
         overflow: hidden;
         text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: clamp(13px, 1.1cqw, 17px);
+        font-size: 13px;
     }
 
     .cal-cell::before {
         content: none;
     }
 
+    .cal-cell-control {
+        display: flex;
+        justify-content: center;
+        padding: 0;
+        overflow: visible;
+    }
+
     .cal-edit-input {
         display: block;
         max-width: none;
-        height: clamp(32px, 2.4cqw, 40px);
-        padding: 0 0.5cqw;
-        font-size: clamp(13px, 1cqw, 15px);
+        height: 32px;
+        padding: 0 5px;
+        font-size: 13px;
     }
 
     .cal-select-wrap {
         display: block;
-        max-width: none;
+        width: calc(100% - 12px);
+        max-width: 190px;
     }
 
     .cal-select-wrap select {
-        height: clamp(32px, 2.4cqw, 40px);
-        padding: 0 clamp(24px, 2cqw, 30px) 0 0.6cqw;
-        font-size: clamp(13px, 1cqw, 15px);
+        height: 34px;
+        padding: 0 28px 0 10px;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+
+    .cal-select-icon {
+        right: 9px;
+        width: 12px;
     }
 
     .cal-cell-password {
@@ -925,7 +968,7 @@ img.caf-btn-icon {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0 clamp(30px, 2.5cqw, 40px) 0 0.6cqw;
+        padding: 0 30px 0 8px;
         overflow: visible;
     }
 
@@ -936,17 +979,17 @@ img.caf-btn-icon {
     .cal-eye {
         position: absolute;
         top: 50%;
-        right: 0.35cqw;
-        width: clamp(26px, 2.05cqw, 34px);
-        height: clamp(26px, 2.05cqw, 34px);
+        right: 3px;
+        width: 26px;
+        height: 26px;
         transform: translateY(-50%);
     }
 
     .cal-cell-actions {
         display: flex;
-        justify-content: flex-start;
-        gap: 0.75cqw;
-        padding: 0 0 0 0.95cqw;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 4px;
         overflow: visible;
     }
 
@@ -955,20 +998,28 @@ img.caf-btn-icon {
     }
 
     .cal-btn {
-        height: clamp(34px, 2.45cqw, 42px);
-        font-size: clamp(12px, 1.1cqw, 16px);
+        height: 30px;
+        border-radius: 16px;
+        font-size: 12px;
     }
 
     .cal-btn img {
-        width: clamp(16px, 1.5cqw, 22px);
-        height: clamp(16px, 1.5cqw, 22px);
+        width: 14px;
+        height: 14px;
     }
 
     .cal-btn-edit {
-        width: clamp(88px, 6.8cqw, 112px);
+        width: 68px;
     }
 
     .cal-btn-save {
-        width: clamp(60px, 4.9cqw, 80px);
+        width: 30px;
+    }
+}
+
+/* Shorter table while the top section is visible, if applicable. */
+@container cal (min-width: 700px) {
+    .ca-page.show-top .cal-table {
+        max-height: 411px;
     }
 }

@@ -1,10 +1,6 @@
 /* =====================================================================
-   Register Customer (Employee) page.
-
-   Sizes were measured from the 1920x1080 mockup and are written as shares
-   of each card's OWN width (cqw = 1% of that card's width). So each card
-   matches the mockup at its mockup width and scales smoothly at any other
-   width, whether the sidebar is open or collapsed.
+   Register Customer (Employee) page
+   Clean, responsive layout with a compact employee table.
    ===================================================================== */
 
 .rc-page {
@@ -20,16 +16,23 @@
     color: #000000;
 }
 
+/* =====================================================================
+   Upper section: Employee Overview + Personal Information Form
+   ===================================================================== */
+
 .rc-top {
-    display: grid;
+    display: none;
     grid-template-columns: minmax(0, 1fr);
-    gap: clamp(12px, 1.85cqw, 28px);
-    margin-bottom: clamp(16px, 3.75cqw, 56px);
+    gap: 16px;
+    margin-bottom: clamp(20px, 3.75cqw, 1px);
 }
 
-/* Overview and Form side by side once the page is wide enough */
+.rc-page.show-top .rc-top {
+    display: grid;
+}
+
 @container rc (min-width: 900px) {
-    .rc-top {
+    .rc-page.show-top .rc-top {
         grid-template-columns: minmax(0, 575fr) minmax(0, 863fr);
     }
 }
@@ -39,7 +42,7 @@
     container-type: inline-size;
     min-width: 0;
     box-sizing: border-box;
-    background: #fdfcff;
+    background: #ffffff;
     border-radius: 16px;
     font-family: "Times New Roman", Times, "Liberation Serif", serif;
 }
@@ -48,7 +51,7 @@
     container-name: rco;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* stays centered if the form card is taller */
+    justify-content: center;
 }
 
 .rcf-card {
@@ -56,8 +59,9 @@
 }
 
 /* =====================================================================
-   1. Employee Overview   (design width 575px)
+   1. Employee Overview
    ===================================================================== */
+
 .rco-title {
     margin: 3.8cqw 0 8.2cqw;
     font-size: clamp(20px, 6.8cqw, 44px);
@@ -104,9 +108,9 @@
     line-height: 1.1;
 }
 
-/* the gray slanted bars between stats */
+/* Gray separators between statistics */
 .rco-stat:not(:first-child)::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     bottom: -0.85cqw;
@@ -117,7 +121,7 @@
     transform: rotate(1deg);
 }
 
-/* Very small card: 2 stats per line */
+/* Very small overview card */
 @container rco (max-width: 339.98px) {
     .rco-row-4 {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -139,8 +143,9 @@
 }
 
 /* =====================================================================
-   2. Employee Personal Information Form   (design width 863px)
+   2. Employee Personal Information Form
    ===================================================================== */
+
 .rcf-title {
     margin: 2.55cqw 4.7cqw 0;
     font-size: clamp(20px, 4.5cqw, 44px);
@@ -152,10 +157,13 @@
     padding: 5.1cqw 4.7cqw 4.6cqw;
 }
 
-/* Last / First / Middle */
+/* Last name, first name, and middle initial */
 .rcf-names {
     display: grid;
-    grid-template-columns: minmax(0, 270fr) minmax(0, 245fr) minmax(0, 209fr);
+    grid-template-columns:
+        minmax(0, 270fr)
+        minmax(0, 245fr)
+        minmax(0, 209fr);
     column-gap: 3.2cqw;
 }
 
@@ -196,7 +204,7 @@
     box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
 }
 
-/* Employment Status + Save / Reset */
+/* Employment status and form actions */
 .rcf-status-row {
     display: flex;
     align-items: flex-end;
@@ -226,7 +234,6 @@
     height: clamp(40px, 5.1cqw, 50px);
     box-sizing: border-box;
     padding: 0 clamp(32px, 4.4cqw, 48px) 0 2.7cqw;
-    -webkit-appearance: none;
     appearance: none;
     border: 1px solid #1d5a30;
     border-radius: 3px;
@@ -301,10 +308,10 @@
 
 img.rcf-btn-icon {
     object-fit: contain;
-    filter: brightness(0); /* the design's icons are solid black */
+    filter: brightness(0);
 }
 
-/* Message line (only takes space when there is a message) */
+/* Form feedback */
 .rcf-message {
     margin: 1.6cqw 0 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -320,7 +327,7 @@ img.rcf-btn-icon {
     color: #1f6b1a;
 }
 
-/* Form narrower than 600px: one column */
+/* Form narrower than 600px */
 @container rcf (max-width: 599.98px) {
     .rcf-title {
         margin: 18px 16px 0;
@@ -398,8 +405,9 @@ img.rcf-btn-icon {
 }
 
 /* =====================================================================
-   3. Full Employee List   (design width 1465px)
+   3. Full Employee List
    ===================================================================== */
+
 .rcl-panel {
     container-type: inline-size;
     container-name: rcl;
@@ -410,14 +418,39 @@ img.rcf-btn-icon {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ----- light teal band: search + title ----- */
+/* Search, toggle button, and title band */
 .rcl-band {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
-    padding: 16px 16px 14px;
-    background: #a7ebe3;
+    padding: 16px;
+    background: #c5f2eb;
+}
+
+/* Show / Hide Overview button */
+.rcl-toggle-top-btn {
+    flex: 0 0 auto;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #2d6a30;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.rcl-toggle-top-btn:hover {
+    background: #245526;
+}
+
+.rcl-toggle-top-btn:focus-visible {
+    outline: 2px solid #1d6b34;
+    outline-offset: 3px;
 }
 
 .rcl-title {
@@ -431,6 +464,7 @@ img.rcf-btn-icon {
     text-align: center;
 }
 
+/* Search */
 .rcl-search {
     position: relative;
     min-width: 0;
@@ -441,32 +475,33 @@ img.rcf-btn-icon {
     height: 44px;
     box-sizing: border-box;
     padding: 0 60px 0 14px;
-    border: 2px solid #000000;
-    border-radius: 9px;
-    background: #efefef;
+    border: 1px solid #777777;
+    border-radius: 22px;
+    background: #ffffff;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
 }
 
 .rcl-search-input:focus-visible {
-    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.35);
+    border-color: #1d6b34;
+    box-shadow: 0 0 0 3px rgba(29, 107, 52, 0.25);
 }
 
 .rcl-search-btn {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 30px;
+    width: 36px;
+    height: 32px;
     padding: 0;
     border: 0;
-    border-radius: 6px;
-    background: #4b9240;
+    border-radius: 50%;
+    background: #397b3c;
     transform: translateY(-50%);
     cursor: pointer;
 }
@@ -478,17 +513,20 @@ img.rcf-btn-icon {
     filter: brightness(0) invert(1);
 }
 
-/* ----- table (small screens: each employee is a card) ----- */
+/* =====================================================================
+   Employee table: mobile card layout by default
+   ===================================================================== */
+
 .rcl-table {
     --rcl-cols:
-        minmax(90px, 1.15fr)  /* Employee_Code */
-        minmax(100px, 1.2fr)  /* Last_Name */
-        minmax(100px, 1.2fr)  /* First_Name */
-        minmax(75px, 0.8fr)   /* Middle_Initial */
-        minmax(100px, 1fr)     /* Balance */
-        minmax(115px, 1.1fr)  /* Emp_Status */
-        minmax(115px, 1.1fr)  /* Acct._Status */
-        minmax(145px, 1.4fr); /* Actions */
+        minmax(90px, 1.15fr)
+        minmax(100px, 1.2fr)
+        minmax(100px, 1.2fr)
+        minmax(75px, 0.8fr)
+        minmax(100px, 1fr)
+        minmax(115px, 1.1fr)
+        minmax(115px, 1.1fr)
+        minmax(145px, 1.4fr);
 
     width: 100%;
     background: #ffffff;
@@ -533,8 +571,8 @@ img.rcf-btn-icon {
 }
 
 .rcl-cell-balance {
-    font-weight: bold;
     color: #176b3a;
+    font-weight: bold;
     font-variant-numeric: tabular-nums;
 }
 
@@ -576,7 +614,7 @@ img.rcf-btn-icon {
     text-align: center;
 }
 
-/* dropdown "pills" in each row */
+/* Dropdowns in each row */
 .rcl-select-wrap {
     position: relative;
     width: 60%;
@@ -588,7 +626,6 @@ img.rcf-btn-icon {
     height: 40px;
     box-sizing: border-box;
     padding: 0 32px 0 12px;
-    -webkit-appearance: none;
     appearance: none;
     border: 1px solid transparent;
     border-radius: 6px;
@@ -632,7 +669,7 @@ img.rcf-btn-icon {
     filter: brightness(0);
 }
 
-/* EDIT / save buttons */
+/* Edit / save buttons */
 .rcl-cell-actions {
     justify-content: flex-end;
     gap: 10px;
@@ -702,13 +739,71 @@ img.rcf-btn-icon {
     white-space: nowrap;
 }
 
-/* ----- list panel 700px and up: search on the left, title centered ----- */
+/* Employment-status filter */
+.rcl-filter {
+    position: relative;
+    flex: 0 0 auto;
+    width: 170px;
+    min-width: 0;
+}
+
+.rcl-filter-select {
+    width:85%;
+    height: 35px;
+    box-sizing: border-box;
+    appearance: none;
+    border-radius: 8px;
+    background: #2d6a30;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 14px;
+    text-align: center;
+}
+
+.rcl-filter-select option {
+    background: #ffffff;
+    color: #11261a;
+}
+
+.rcl-filter-select:hover {
+    background: #245526;
+}
+
+.rcl-filter-icon {
+    position: absolute;
+    top: 50%;
+    right: 35px;
+    width: 13px;
+    height: auto;
+    transform: translateY(-50%);
+    pointer-events: none;
+    filter: brightness(0) invert(1);
+}
+
+/* Keep controls usable on smaller screens */
+@container rcl (max-width: 699.98px) {
+    .rcl-filter {
+        width: 100%;
+    }
+
+    .rcl-filter-select {
+        height: 44px;
+    }
+}
+
+/* =====================================================================
+   Desktop employee table: clean, compact inventory-style design
+   ===================================================================== */
+
 @container rcl (min-width: 700px) {
     .rcl-band {
         flex-direction: row;
         align-items: center;
-        gap: 2cqw;
-        padding: 1.8cqw 2.5cqw 1cqw;
+        gap: 12px;
+        padding: 16px;
     }
 
     .rcl-title {
@@ -716,6 +811,7 @@ img.rcf-btn-icon {
         flex: 1;
         min-width: 0;
         font-size: clamp(20px, 2.7cqw, 44px);
+        text-align: center;
     }
 
     .rcl-search {
@@ -724,25 +820,34 @@ img.rcf-btn-icon {
     }
 
     .rcl-search-input {
-        height: clamp(40px, 2.9cqw, 46px);
-        padding-right: clamp(56px, 5.2cqw, 68px);
+        height: 38px;
+        padding-right: 48px;
     }
 
     .rcl-search-btn {
-        right: 0.7cqw;
-        width: clamp(40px, 3.6cqw, 56px);
-        height: clamp(26px, 2.25cqw, 34px);
+        right: 5px;
+        width: 30px;
+        height: 30px;
     }
-}
 
-/* ----- list panel 980px and up: the real table ----- */
-@container rcl (min-width: 700px) {
+    .rcl-toggle-top-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
     .rcl-table {
         width: 100%;
         min-width: 100px;
-        max-height: 500px;
-        min-height: clamp(300px, 35cqw, 560px);
+        height: auto;
+        max-height: 795px;
+        min-height: 0;
         overflow: auto;
+        background: #ffffff;
+    }
+
+    /* Shorter list while overview and form are visible */
+    .rc-page.show-top .rcl-table {
+        max-height: 411px;
     }
 
     .rcl-head {
@@ -752,11 +857,12 @@ img.rcf-btn-icon {
         display: grid;
         grid-template-columns: var(--rcl-cols);
         align-items: stretch;
-        height: clamp(44px, 3.75cqw, 60px);
+        height: 38px;
         box-sizing: border-box;
-        border: 1px solid #1a1a1a;
-        background: #71c6d1;
-        font-size: clamp(12px, 1.37cqw, 21px);
+        border: none;
+        background: #80c4c5;
+        color: #111111;
+        font-size: 13px;
         font-weight: bold;
     }
 
@@ -765,19 +871,19 @@ img.rcf-btn-icon {
         align-items: center;
         justify-content: center;
         min-width: 0;
-        padding: 0 0.5cqw;
+        padding: 0 8px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     .rcl-head > span:not(:last-child) {
-        border-right: 1px solid #1a1a1a;
+        border-right: none;
     }
 
     .rcl-body {
         display: block;
-        padding: 0;
+        padding: 0 8px;
     }
 
     .rcl-row {
@@ -786,15 +892,15 @@ img.rcf-btn-icon {
         grid-template-columns: var(--rcl-cols);
         align-items: center;
         gap: 0;
-        height: clamp(44px, 3.2cqw, 56px);
-        padding: 0 1px;
-        border: 0;
+        height: 45px;
+        padding: 0;
+        border: none;
         border-radius: 0;
-        background: transparent;
+        background: #ffffff;
     }
 
     .rcl-row:hover {
-        background: #f3fbfa;
+        background: #f5fbfb;
     }
 
     .rcl-row-editing,
@@ -802,25 +908,26 @@ img.rcf-btn-icon {
         background: #f1fbf3;
     }
 
-    /* the thin line under every row (inset like the design) */
+    /* Subtle divider between employee records */
     .rcl-row::after {
-        content: '';
+        content: "";
         position: absolute;
-        right: 0.7cqw;
+        right: 0;
         bottom: 0;
-        left: 0.7cqw;
+        left: 0;
         height: 1px;
-        background: #444444;
+        background: #dddddd;
     }
 
     .rcl-cell {
         display: block;
-        padding: 0 0.6cqw;
+        min-width: 0;
+        padding: 0 8px;
         overflow: hidden;
         text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: clamp(13px, 1.1cqw, 17px);
+        font-size: 13px;
     }
 
     .rcl-cell::before {
@@ -835,26 +942,27 @@ img.rcf-btn-icon {
     }
 
     .rcl-select-wrap {
-        width: calc(100% - 14px);
+        width: calc(100% - 12px);
         max-width: 190px;
     }
 
     .rcl-select-wrap select {
-        height: clamp(34px, 2.53cqw, 42px);
-        padding: 0 clamp(28px, 2.4cqw, 36px) 0 12px;
-        font-size: clamp(13px, 1cqw, 15px);
+        height: 34px;
+        padding: 0 28px 0 10px;
+        border-radius: 6px;
+        font-size: 12px;
     }
 
     .rcl-select-icon {
-        right: 10px;
-        width: clamp(11px, 1.2cqw, 16px);
+        right: 9px;
+        width: 12px;
     }
 
     .rcl-cell-actions {
         display: flex;
-        justify-content: flex-start;
-        gap: clamp(8px, 1cqw, 16px);
-        padding: 0 0 0 0.5cqw;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 4px;
         overflow: visible;
     }
 
@@ -863,20 +971,21 @@ img.rcf-btn-icon {
     }
 
     .rcl-btn {
-        height: clamp(34px, 2.53cqw, 42px);
-        font-size: clamp(12px, 1.1cqw, 16px);
+        height: 30px;
+        border-radius: 16px;
+        font-size: 12px;
     }
 
     .rcl-btn img {
-        width: clamp(16px, 1.5cqw, 22px);
-        height: clamp(16px, 1.5cqw, 22px);
+        width: 14px;
+        height: 14px;
     }
 
     .rcl-btn-edit {
-        width: clamp(88px, 7.2cqw, 118px);
+        width: 68px;
     }
 
     .rcl-btn-save {
-        width: clamp(60px, 4.9cqw, 80px);
+        width: 30px;
     }
 }

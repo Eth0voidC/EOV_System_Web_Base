@@ -1,6 +1,6 @@
 import '../components-css/shoppingcart.css';
 
-const CURRENCY = '$'; // change to your currency symbol
+const CURRENCY = '₱'; // change to your currency symbol
 
 function ShoppingCart({
     items,
@@ -25,26 +25,27 @@ function ShoppingCart({
     const canSubmit = !isEmpty && selectedEmployee && !isRestricted && !submitting;
 
     // Suggestions while typing (hidden once an employee is chosen)
-    
     const suggestions =
-        employeeQuery.trim() && !selectedEmployee
-            ? employees
-                .filter((emp) => {
-                    const isActiveEmployment =
-                        emp.employmentStatus?.trim().toLowerCase() !== 'inactive';
+    employeeQuery.trim() && !selectedEmployee
+        ? employees
+            .filter((emp) => {
+                const isActiveEmployment =
+                    emp.employmentStatus?.trim().toLowerCase() !== 'inactive';
 
-                    const isActiveAccount =
-                        emp.status?.trim().toLowerCase() === 'active';
+                const isValidAccount =
+                    ['active', 'restricted'].includes(
+                        emp.status?.trim().toLowerCase()
+                    );
 
-                    const matchesName =
-                        emp.name.toLowerCase().includes(
-                            employeeQuery.trim().toLowerCase()
-                        );
+                const matchesName =
+                    emp.name.toLowerCase().includes(
+                        employeeQuery.trim().toLowerCase()
+                    );
 
-                    return isActiveEmployment && isActiveAccount && matchesName;
-                })
-                .slice(0, 6)
-            : [];
+                return isActiveEmployment && isValidAccount && matchesName;
+            })
+            .slice(0, 6)
+        : [];
 
     // Tells the staff why Submit is disabled
     let hint = '';

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import './LandingPage.css';
 import DashboardPreview from '../assets/dashboard-preview.jpg';
+import Cblogo from '../assets/cb-sislogo.png';
 
 function LandingPage() {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ function LandingPage() {
                 <a
                     href="#home"
                     className="landing-brand"
-                    aria-label="EOV System home"
+                    aria-label="CB-SIS System home"
                     onClick={(event) => {
                         event.preventDefault();
                         window.scrollTo({
@@ -33,9 +34,13 @@ function LandingPage() {
                         });
                     }}
                 >
-                    <span className="brand-mark">EOV</span>
+                    <img
+                        src={Cblogo}
+                        alt="EOV logo"
+                        className="login-header-logo"
+                    />
                     <span className="brand-name">
-                        EOV <span>System</span>
+                        CB-SIS <span>System</span>
                     </span>
                 </a>
 
@@ -261,9 +266,13 @@ function LandingPage() {
                                 });
                             }}
                         >
-                            <span className="brand-mark">EOV</span>
+                            <img
+                                src={Cblogo}
+                                alt="CB-SIS logo"
+                                className="login-header-logo"
+                            />
                             <span className="brand-name">
-                                EOV <span>System</span>
+                                CB-SIS <span>System</span>
                             </span>
                         </a>
 
@@ -354,8 +363,10 @@ function LandingPage() {
                             Developers
                         </h3>
 
-                        <p>Romnick James Bargo, Ralph Geoffery Marcos, Ace Dave Reyes, Aerosh Yezel Sta. Rosa (BSIT-31C)</p>
-
+                        <p>Eth0void.C</p>
+                        <p>Cryptic.</p>
+                        <p>Reyes, Ace Dave D.</p>
+                        <p>Sta. Rosa, Aerosh Yezel F.</p>
                         <a
                             className="footer-developer-link"
                             href="https://github.com/Eth0voidC"
@@ -370,7 +381,7 @@ function LandingPage() {
                 {/* Copyright */}
                 <div className="footer-bottom">
                     <p>
-                        © {currentYear} EOV System. All rights reserved.
+                        &copy; {currentYear} EOV System. All rights reserved.
                     </p>
 
                     <p>

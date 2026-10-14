@@ -84,7 +84,9 @@ function RegisterCustomer() {
 
     // List controls
     const [searchTerm, setSearchTerm] = useState('');
+    const [isTopVisible, setIsTopVisible] = useState(false);
     const searchRef = useRef(null);
+    const [employmentFilter, setEmploymentFilter] = useState('All');
 
     // Row editing
     const [editingId, setEditingId] = useState(null);
@@ -357,26 +359,32 @@ function RegisterCustomer() {
     const visibleEmployees = useMemo(() => {
         const q = searchTerm.trim().toLowerCase();
 
-        if (!q) return employees;
+        return employees.filter((emp) => {
+            const matchesSearch =
+                !q ||
+                [
+                    emp.employee_code,
+                    emp.last_name,
+                    emp.first_name,
+                    emp.middle_initial,
+                    emp.employment_status,
+                    accountLabel(emp.account_status),
+                ]
+                    .join(' ')
+                    .toLowerCase()
+                    .includes(q);
 
-        return employees.filter((emp) =>
-            [
-                emp.employee_code,
-                emp.last_name,
-                emp.first_name,
-                emp.middle_initial,
-                emp.employment_status,
-                accountLabel(emp.account_status),
-            ]
-                .join(' ')
-                .toLowerCase()
-                .includes(q)
-        );
-    }, [employees, searchTerm]);
+            const matchesEmployment =
+                employmentFilter === 'All' ||
+                emp.employment_status === employmentFilter;
+
+            return matchesSearch && matchesEmployment;
+        });
+    }, [employees, searchTerm, employmentFilter]);
 
     return (
-        <div className="rc-page">
-            <div className="rc-top">
+        <div className={`rc-page ${isTopVisible ? 'show-top' : ''}`}>
+            <div className="rc-top" id="rc-top-section">
                 {/* Employee Overview */}
                 <section className="rco-card" aria-labelledby="rco-title">
                     <h2 className="rco-title" id="rco-title">
@@ -534,6 +542,35 @@ function RegisterCustomer() {
                         >
                             <img src={SearchIcon} alt="" />
                         </button>
+                    </div>
+                    <button
+                        type="button"
+                        className="rcl-toggle-top-btn"
+                        onClick={() => setIsTopVisible((prev) => !prev)}
+                        aria-expanded={isTopVisible}
+                        aria-controls="rc-top-section"
+                    >
+                        {isTopVisible ? 'Hide ' : 'Show More Option ?'}
+                    </button>
+
+                    <div className="rcl-filter">
+                        <select
+                            className="rcl-filter-select"
+                            aria-label="Filter employees by employment status"
+                            value={employmentFilter}
+                            onChange={(e) => setEmploymentFilter(e.target.value)}
+                        >
+                            <option value="All">All Employees</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Extra">Extra</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+
+                        <img
+                            src={DropdownIcon}
+                            alt=""
+                            className="rcl-filter-icon"
+                        />
                     </div>
 
                     <h2 className="rcl-title" id="rcl-title">

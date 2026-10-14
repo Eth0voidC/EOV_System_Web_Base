@@ -5,15 +5,21 @@ import ShoppingCart from './ShoppingCart';
 import SearchIcon from '../../assets/search-icon.png';
 import CartIcon from '../../assets/shopping-cart-icon.png';
 
+
+//for API Request
 import { getAllEmployees } from '../../api/employees';
 import { createTransaction } from '../../api/transaction';
 import { getActiveProducts } from '../../api/products';
+import { getAllCategories } from '../../api/categories';
 
 import '../components-css/productcard.css';
 import '../components-css/shoppingcart.css';
 
 function ProductView() {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -32,11 +38,13 @@ function ProductView() {
     return getActiveProducts().then((data) => {
             setProducts(
                 data.map((p) => ({
-                    id: p.product_item_id,
-                    name: p.product_name,
-                    quantity: p.stock_quantity,
-                    price: Number(p.price),
-                    image: p.image,
+                id: p.product_item_id,
+                name: p.product_name,
+                quantity: p.stock_quantity,
+                price: Number(p.price),
+                image: p.image,
+                categoryId: p.product_category_id,
+                categoryName: p.category_name,
                 }))
             );
         });
@@ -45,8 +53,12 @@ function ProductView() {
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        Promise.all([getActiveProducts(), getAllEmployees(token)])
-            .then(([productsData, employeesData]) => {
+        Promise.all([
+            getActiveProducts(),
+            getAllEmployees(token),
+            getAllCategories(),
+        ])
+            .then(([productsData, employeesData, categoriesData]) => {
                 setProducts(
                     productsData.map((p) => ({
                         id: p.product_item_id,
@@ -54,14 +66,21 @@ function ProductView() {
                         quantity: p.stock_quantity,
                         price: Number(p.price),
                         image: p.image,
+                        categoryId: p.product_category_id,
+                        categoryName: p.category_name,
                     }))
                 );
+
+                setCategories(categoriesData);
+
                 setEmployees(
                     employeesData
                         .filter(
                             (e) =>
                                 e.employment_status?.trim().toLowerCase() !== 'inactive' &&
-                                e.account_status?.trim().toLowerCase() === 'active'
+                                ['active', 'restricted'].includes(
+                                    e.account_status?.trim().toLowerCase()
+                                )
                         )
                         .map((e) => ({
                             id: e.employee_id,
@@ -69,16 +88,23 @@ function ProductView() {
                             status: e.account_status,
                             employmentStatus: e.employment_status,
                         }))
-                        
                 );
             })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
     }, []);
 
-    const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(search.trim().toLowerCase())
-    );
+    const filteredProducts = products.filter((product) => {
+        const matchesSearch = product.name
+            .toLowerCase()
+            .includes(search.trim().toLowerCase());
+
+        const matchesCategory =
+            selectedCategory === '' ||
+            String(product.categoryId) === selectedCategory;
+
+        return matchesSearch && matchesCategory;
+    });
 
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -142,7 +168,11 @@ function ProductView() {
     };
 
     const handleSubmit = async () => {
-        if (!selectedEmployee || selectedEmployee.status !== 'Active' || cartItems.length === 0) {
+        if (
+            !selectedEmployee ||
+            selectedEmployee.status?.trim().toLowerCase() !== 'active' ||
+            cartItems.length === 0
+        ) {
             return;
         }
 
@@ -179,6 +209,24 @@ function ProductView() {
                 <h2 className="product-title">Product</h2>
 
                 <div className="search-area">
+                    <select
+                        className="product-category-filter"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        aria-label="Filter products by category"
+                    >
+                        <option value="">All Products</option>
+
+                        {categories.map((category) => (
+                            <option
+                                key={category.product_category_id}
+                                value={String(category.product_category_id)}
+                            >
+                                {category.category_name}
+                            </option>
+                        ))}
+                    </select>
+
                     <div className="search-bar">
                         <input
                             type="text"
@@ -187,7 +235,11 @@ function ProductView() {
                             placeholder="Search product..."
                         />
 
-                        <button type="button" className="search-btn" aria-label="Search">
+                        <button
+                            type="button"
+                            className="search-btn"
+                            aria-label="Search"
+                        >
                             <img src={SearchIcon} alt="" className="search-icon" />
                         </button>
                     </div>
@@ -199,7 +251,9 @@ function ProductView() {
                         aria-label="Open shopping cart"
                     >
                         <img src={CartIcon} alt="" className="cart-icon" />
-                        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                        {cartCount > 0 && (
+                            <span className="cart-badge">{cartCount}</span>
+                        )}
                     </button>
                 </div>
 

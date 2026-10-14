@@ -43,6 +43,7 @@ function InventoryViewAdmin() {
     const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
     const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
     const [openRowStatusId, setOpenRowStatusId] = useState(null);
+    const [isTopVisible, setIsTopVisible] = useState(false);
 
     // ---------- Row editing ----------
     const [editingRowId, setEditingRowId] = useState(null);
@@ -309,7 +310,7 @@ function InventoryViewAdmin() {
     const statusColumnLabel = statusFilter === 'All' ? 'Status' : statusFilter;
 
     return (
-        <div className="inv-page">
+        <div className={`inv-page ${isTopVisible ? 'show-top' : ''}`}>
             <div className="inv-top">
                 {/* ---------- Inventory Overview ---------- */}
                     <section className="ovw-panel">
@@ -588,7 +589,14 @@ function InventoryViewAdmin() {
                         <option value="Active">Active</option>
                         <option value="Inactive">Inactive</option>
                     </select>
-
+                    <button
+                        type="button"
+                        className="inv-toggle-top-btn"
+                        onClick={() => setIsTopVisible((prev) => !prev)}
+                        aria-expanded={isTopVisible}
+                    >
+                        {isTopVisible ? 'Hide' : ' Show More Option ?'}
+                    </button>
                     <h2 className="inv-list-title">Full Product Inventory List</h2>
                 </div>
 
