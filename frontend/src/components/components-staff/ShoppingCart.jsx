@@ -44,7 +44,7 @@ function ShoppingCart({
 
                 return isActiveEmployment && isValidAccount && matchesName;
             })
-            .slice(0, 6)
+            .slice(0, 15)
         : [];
 
     // Tells the staff why Submit is disabled

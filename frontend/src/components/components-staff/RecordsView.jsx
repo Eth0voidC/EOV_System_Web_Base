@@ -46,7 +46,7 @@ function RecordsView() {
         query.trim() && !employee
             ? employees
                   .filter((e) => e.name.toLowerCase().includes(query.trim().toLowerCase()))
-                  .slice(0, 6)
+                  .slice(0, 30)
             : [];
 
     const handleQueryChange = (e) => {

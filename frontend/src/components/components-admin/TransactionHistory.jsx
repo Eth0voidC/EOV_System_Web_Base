@@ -52,7 +52,6 @@ function TransactionHistory() {
         query.trim() && !employee
             ? employees
                   .filter((e) => e.name.toLowerCase().includes(query.trim().toLowerCase()))
-                  .slice(0, 6)
             : []; //[cite: 5]
 
     const handleQueryChange = (e) => {
