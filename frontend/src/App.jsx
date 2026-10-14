@@ -24,7 +24,7 @@ import DeliveryHistory from './components/components-admin/DeliveryHistory';
 import TransactionHistory from './components/components-admin/TransactionHistory';
 import DeductionProcessing from './components/components-admin/DeductionProcessing';
 import Logs from './components/components-admin/Logs';
-import RegisterCustomer from './components/components-admin/RegisterCustomer';
+import RegisterEmployee from './components/components-admin/RegisterEmployee';
 import CreateAccount from './components/components-admin/CreateAccount';
 
 function App() {
@@ -51,7 +51,7 @@ function App() {
           <Route path="reports/transaction-history" element={<TransactionHistory />} />
           <Route path="reports/deduction-processing" element={<DeductionProcessing />} />
           <Route path="reports/logs" element={<Logs />} />
-          <Route path="customer/register" element={<RegisterCustomer />} />
+          <Route path="customer/register" element={<RegisterEmployee />} />
           <Route path="customer/create-account" element={<CreateAccount />} />
           <Route path="product" element={<ProductView />} />
           <Route path="delivery" element={<DeliveryView />} />
