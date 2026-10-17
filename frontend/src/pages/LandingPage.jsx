@@ -363,7 +363,7 @@ function LandingPage() {
                         <h3 className="footer-developer-heading">
                             Developers
                         </h3>
-                        <p>
+                        {/* <p>
                             <a
                                 className="footer-developer-link"
                                 href="https://github.com/Eth0voidC"
@@ -409,7 +409,7 @@ function LandingPage() {
                                 <span>Sta. Rosa, Aerosh Yezel F.</span>
                                 <FaGithub size={15} aria-hidden="true" />
                             </a>
-                        </p>                        
+                        </p>                         */}
                     </div>
                 </div>
 
