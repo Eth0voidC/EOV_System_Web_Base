@@ -363,6 +363,7 @@ function LandingPage() {
                         <h3 className="footer-developer-heading">
                             Developers
                         </h3>
+                        
                         <p>
                             <a
                                 className="footer-developer-link"
